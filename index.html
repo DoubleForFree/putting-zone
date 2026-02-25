@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Putting Zone">
+<title>Putting Zone Scorecard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+:root {
+  --green-dark: #1a3a2a;
+  --green-mid: #2d6a4f;
+  --green-bright: #40916c;
+  --sand: #f4d35e;
+  --flag: #e63946;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --card-bg: #f0f7f4;
+  --border: #d1fae5;
+  --safe-top: env(safe-area-inset-top, 44px);
+  --safe-bottom: env(safe-area-inset-bottom, 34px);
+}
+html, body { height: 100%; overflow: hidden; }
+body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color: var(--text); }
+.screen { display: none; height: 100vh; flex-direction: column; overflow: hidden; }
+.screen.active { display: flex; }
+
+/* ===== HOME ===== */
+#home {
+  background: linear-gradient(170deg, #0d2118 0%, #1a3a2a 50%, #2d6a4f 100%);
+  align-items: center; justify-content: center;
+  padding: 60px 32px 40px; gap: 0; position: relative; overflow: hidden;
+}
+.home-bg-circle { position: absolute; border-radius: 50%; background: rgba(82,183,136,0.07); }
+.home-bg-circle:nth-child(1) { width: 500px; height: 500px; top: -200px; right: -150px; }
+.home-bg-circle:nth-child(2) { width: 300px; height: 300px; bottom: -100px; left: -100px; }
+.home-flag { font-size: 60px; display: block; margin-bottom: 12px; animation: flagWave 2s ease-in-out infinite; }
+@keyframes flagWave { 0%,100%{transform:rotate(-5deg);} 50%{transform:rotate(5deg);} }
+.home-title { font-family:'Bebas Neue',cursive; font-size:52px; color:white; line-height:0.9; letter-spacing:2px; text-align:center; text-shadow:0 4px 20px rgba(0,0,0,0.4); position:relative;z-index:1; }
+.home-title span { color:var(--sand); }
+.home-subtitle { color:rgba(255,255,255,0.45); font-size:12px; letter-spacing:3px; text-transform:uppercase; margin-top:6px; margin-bottom:44px; position:relative;z-index:1; }
+.home-actions { display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px; position:relative;z-index:1; }
+.btn-main { background:var(--sand); color:var(--green-dark); border:none; border-radius:14px; padding:17px; font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; cursor:pointer; box-shadow:0 6px 24px rgba(244,211,94,0.35); transition:transform 0.1s; width:100%; }
+.btn-main:active { transform:scale(0.97); }
+/* EDIT 1: Player profiles button now matches view scorecards (btn-outline style) */
+.btn-outline { background:rgba(255,255,255,0.1); color:white; border:1.5px solid rgba(255,255,255,0.2); border-radius:14px; padding:15px; font-size:15px; font-weight:600; cursor:pointer; width:100%; }
+.btn-outline:active { background:rgba(255,255,255,0.18); }
+.home-course-info { position:relative;z-index:1; margin-top:36px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:14px 20px; text-align:center; width:100%;max-width:300px; }
+.home-course-info .course-name { font-family:'Bebas Neue',cursive; color:var(--sand); font-size:17px; letter-spacing:1px; }
+.home-course-info .course-detail { color:rgba(255,255,255,0.45); font-size:11px; margin-top:2px; }
+
+/* ===== NAV ===== */
+.nav-header { background:var(--green-dark); padding:calc(var(--safe-top) + 6px) 16px 14px; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.nav-back { background:rgba(255,255,255,0.12); border:none; color:white; width:34px;height:34px; border-radius:10px; font-size:20px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; }
+.nav-title { font-family:'Bebas Neue',cursive; color:white; font-size:22px; letter-spacing:1px; flex:1; }
+
+/* ===== SETUP ===== */
+#setup { background:var(--card-bg); }
+.setup-body { padding:20px; flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.setup-section { margin-bottom:24px; }
+.setup-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:9px; }
+.profile-grid { display:flex; flex-direction:column; gap:8px; }
+.profile-select-card { display:flex; align-items:center; gap:12px; background:white; border:2px solid var(--border); border-radius:14px; padding:10px 14px; cursor:pointer; transition:all 0.15s; }
+.profile-select-card.selected { border-color:var(--green-bright); background:#f0fdf4; }
+.profile-select-card.selected .profile-check { opacity:1; }
+.profile-avatar { width:38px; height:38px; border-radius:50%; color:white; font-weight:700; font-size:14px; display:flex;align-items:center;justify-content:center; flex-shrink:0; font-family:'Bebas Neue',cursive; letter-spacing:1px; }
+.profile-info { flex:1; }
+.profile-name { font-size:15px; font-weight:700; color:var(--text); }
+.profile-stats-hint { font-size:11px; color:var(--muted); margin-top:1px; }
+.profile-check { width:22px;height:22px; border-radius:50%; background:var(--green-bright); display:flex;align-items:center;justify-content:center; opacity:0; transition:opacity 0.15s; flex-shrink:0; }
+.profile-check::after { content:'✓'; color:white; font-size:13px; font-weight:700; }
+.btn-add-profile { background:none; border:1.5px dashed var(--border); border-radius:12px; padding:13px; color:var(--green-bright); font-size:14px; font-weight:600; cursor:pointer; width:100%; display:flex;align-items:center;justify-content:center;gap:6px; margin-top:4px; }
+.add-profile-form { background:white; border:2px solid var(--green-bright); border-radius:14px; padding:14px; margin-top:4px; }
+.add-profile-form input { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:10px 14px; font-size:16px; font-family:'DM Sans',sans-serif; color:var(--text); outline:none; margin-bottom:10px; }
+.add-profile-form input:focus { border-color:var(--green-bright); }
+.add-profile-actions { display:flex; gap:8px; }
+.btn-save-profile { flex:1; background:var(--green-mid); color:white; border:none; border-radius:10px; padding:11px; font-size:14px; font-weight:700; cursor:pointer; }
+.btn-cancel-profile { flex:1; background:#f3f4f6; color:var(--muted); border:none; border-radius:10px; padding:11px; font-size:14px; font-weight:600; cursor:pointer; }
+/* Color picker swatches */
+.color-picker-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+.color-swatch { width:32px; height:32px; border-radius:50%; border:3px solid transparent; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
+.color-swatch.selected { border-color:white; box-shadow:0 0 0 2px var(--green-bright); transform:scale(1.1); }
+.color-picker-label { font-size:11px; color:var(--muted); font-weight:600; margin-bottom:5px; }
+.start-hole-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; }
+.start-hole-btn { border:1.5px solid var(--border); border-radius:10px; padding:10px 4px; text-align:center; cursor:pointer; background:white; font-size:13px; font-weight:700; color:var(--text); transition:all 0.15s; }
+.start-hole-btn.selected { border-color:var(--green-bright); background:#f0fdf4; color:var(--green-dark); }
+.start-hole-btn .hole-par-hint { font-size:9px; color:var(--muted); font-weight:400; }
+.btn-start { background:var(--green-mid); color:white; border:none; border-radius:14px; padding:17px; font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; cursor:pointer; width:100%; margin-top:6px; box-shadow:0 4px 16px rgba(45,106,79,0.3); }
+.btn-start:active { transform:scale(0.98); }
+
+/* ===== SCORING SCREEN ===== */
+#scoring { background:var(--card-bg); }
+.score-header { background:var(--green-dark); padding:calc(var(--safe-top) + 4px) 10px 8px; flex-shrink:0; }
+.hole-nav-row { display:flex; align-items:center; margin-bottom:8px; position:relative; min-height:40px; }
+.hole-center { position:absolute; left:0; right:0; text-align:center; pointer-events:none; }.hole-arrow { background:rgba(255,255,255,0.12); border:none; color:white; width:32px; height:32px; border-radius:10px; font-size:18px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; transition:background 0.1s; }
+.hole-arrow:active { background:rgba(255,255,255,0.22); }
+/* EDIT 5: Exit round button in header */
+.hole-exit-btn { background:rgba(230,57,70,0.2); border:1px solid rgba(230,57,70,0.4); color:rgba(255,255,255,0.7); width:32px; height:32px; border-radius:10px; font-size:13px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; font-weight:700; }
+.hole-exit-btn:active { background:rgba(230,57,70,0.4); }
+.hole-center { flex:1; text-align:center; }
+.hole-badge { display:inline-block; background:var(--sand); color:var(--green-dark); font-family:'Bebas Neue',cursive; font-size:11px; letter-spacing:1px; padding:2px 9px; border-radius:20px; margin-bottom:1px; }
+.hole-name-header { font-family:'Bebas Neue',cursive; color:white; font-size:22px; letter-spacing:1px; line-height:1; }
+.hole-par-badge { color:rgba(255,255,255,0.55); font-size:12px; font-weight:600; margin-top:1px; }
+.hole-strip-wrap { overflow-x:auto; scrollbar-width:none; padding:0 2px 2px; }
+.hole-strip-wrap::-webkit-scrollbar { display:none; }
+.hole-strip { display:flex; gap:5px; width:max-content; }
+.hole-pip { display:flex; flex-direction:column; align-items:center; justify-content:center; width:34px; min-height:42px; border-radius:9px; border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.07); cursor:pointer; transition:all 0.12s; flex-shrink:0; padding:4px 2px; }
+.hole-pip.current { background:white; border-color:white; }
+.hole-pip.scored { background:rgba(64,145,108,0.5); border-color:var(--green-bright); }
+.hole-pip.current.scored { background:var(--sand); border-color:var(--sand); }
+.hole-pip-num { font-family:'Bebas Neue',cursive; font-size:14px; color:rgba(255,255,255,0.8); line-height:1; }
+.hole-pip.current .hole-pip-num { color:var(--green-dark); }
+.hole-pip.scored .hole-pip-num { color:white; }
+.hole-pip.current.scored .hole-pip-num { color:var(--green-dark); }
+.hole-pip-check { font-size:8px; color:rgba(255,255,255,0.5); margin-top:1px; line-height:1; }
+.hole-pip.scored .hole-pip-check { color:rgba(255,255,255,0.9); }
+.hole-pip.current .hole-pip-check { color:var(--green-dark); opacity:0.6; }
+.hole-pip.current.scored .hole-pip-check { color:var(--green-dark); opacity:0.7; }
+.player-switcher { display:flex; gap:6px; padding:0 10px 8px; overflow-x:auto; scrollbar-width:none; flex-shrink:0; background:var(--green-dark); }
+.player-switcher::-webkit-scrollbar { display:none; }
+.player-chip { flex-shrink:0; display:flex; align-items:center; gap:7px; padding:5px 12px 5px 6px; border-radius:20px; border:none; cursor:pointer; background:rgba(255,255,255,0.1); transition:all 0.15s; }
+.player-chip.active { background:white; }
+.player-chip-avatar { width:24px;height:24px; border-radius:50%; color:white; font-weight:800; font-size:10px; display:flex;align-items:center;justify-content:center; flex-shrink:0; font-family:'Bebas Neue',cursive; }
+.player-chip-name { font-size:12px; font-weight:600; color:rgba(255,255,255,0.75); }
+.player-chip.active .player-chip-name { color:var(--green-dark); }
+.player-chip-score { font-size:11px; font-weight:700; color:rgba(255,255,255,0.45); margin-left:1px; }
+.player-chip.active .player-chip-score { color:var(--green-mid); }
+.score-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:12px 14px; display:flex; flex-direction:column; gap:11px; }
+.hole-stats-card { background:white; border-radius:14px; padding:12px 14px; box-shadow:0 1px 6px rgba(0,0,0,0.06); }
+.hole-stats-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:8px; }
+.hole-stats-row { display:flex; gap:6px; }
+.hole-stat { flex:1; text-align:center; background:var(--card-bg); border-radius:10px; padding:7px 4px; }
+.hole-stat-val { font-family:'Bebas Neue',cursive; font-size:20px; color:var(--green-dark); line-height:1; }
+.hole-stat-val.under { color:#16a34a; }
+.hole-stat-val.over { color:var(--flag); }
+.hole-stat-lbl { font-size:9px; color:var(--muted); margin-top:1px; }
+.score-inputs-card { background:white; border-radius:14px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,0.06); }
+.score-section-header { padding:8px 14px 5px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); background:#fafafa; border-bottom:1px solid #f0f0f0; }
+.stroke-stepper-wrap { display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid #f5f5f5; }
+.stroke-stepper-label { flex:1; }
+.stroke-stepper-label-text { font-size:14px; font-weight:600; color:var(--text); }
+.stroke-stepper-label-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.stroke-stepper { display:flex; align-items:center; background:#f0fdf4; border:2px solid var(--border); border-radius:14px; overflow:hidden; }
+.stroke-step-btn { background:none; border:none; width:44px; height:44px; font-size:22px; cursor:pointer; color:var(--green-mid); font-weight:700; display:flex;align-items:center;justify-content:center; flex-shrink:0; }
+.stroke-step-btn:active { background:#d1fae5; }
+.stroke-step-val { font-family:'Bebas Neue',cursive; font-size:30px; color:var(--green-dark); min-width:44px; text-align:center; line-height:1; }
+.input-row { display:flex; align-items:center; gap:12px; padding:11px 14px; border-bottom:1px solid #f5f5f5; }
+.input-row-label { flex:1; }
+.input-row-label-text { font-size:14px; font-weight:600; color:var(--text); }
+.input-row-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.input-stepper { display:flex; align-items:center; gap:0; background:#f3f4f6; border-radius:12px; overflow:hidden; }
+.stepper-btn { background:none; border:none; width:36px; height:36px; font-size:20px; cursor:pointer; color:var(--green-mid); font-weight:700; display:flex;align-items:center;justify-content:center; }
+.stepper-btn:active { background:#e5e7eb; }
+.stepper-val { min-width:38px; text-align:center; font-size:17px; font-weight:700; color:var(--text); }
+.zones-wrap { padding:10px 14px; border-bottom:1px solid #f5f5f5; }
+.zones-grid { display:flex; gap:7px; flex-wrap:wrap; margin-top:7px; }
+.zone-chip { display:flex;align-items:center;gap:5px; padding:8px 12px; border-radius:20px; border:1.5px solid var(--border); background:white; cursor:pointer; font-size:13px; font-weight:600; color:var(--muted); transition:all 0.15s; }
+.zone-chip.hit { border-color:var(--green-bright); background:#f0fdf4; color:var(--green-dark); }
+.zone-chip-dot { width:7px;height:7px;border-radius:50%; background:var(--border); transition:background 0.15s; }
+.zone-chip.hit .zone-chip-dot { background:var(--green-bright); }
+
+/* EDIT 4: Score summary bar — removed vs par text */
+.score-summary-bar { background:var(--green-dark); border-radius:14px; padding:14px 16px; display:flex; align-items:stretch; justify-content:space-between; gap:12px; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
+.summary-left { flex:1; display:flex; flex-direction:column; justify-content:center; }
+.summary-left .lbl { color:rgba(255,255,255,0.5); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.summary-left .big-val { font-family:'Bebas Neue',cursive; font-size:52px; color:white; line-height:1; }
+.summary-left .player-name-lbl { color:rgba(255,255,255,0.45); font-size:11px; font-weight:600; margin-top:2px; }
+.vs-par.under { color:#4ade80; }
+.vs-par.over { color:#f87171; }
+.vs-par.even { color:rgba(255,255,255,0.5); }
+.summary-divider { width:1px; background:rgba(255,255,255,0.12); flex-shrink:0; }
+.summary-right { display:flex; flex-direction:column; justify-content:center; gap:6px; min-width:110px; }
+.summary-right-row { display:flex; flex-direction:column; align-items:flex-end; }
+.summary-right .sr-lbl { color:rgba(255,255,255,0.4); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; }
+.summary-right .sr-val { font-family:'Bebas Neue',cursive; font-size:20px; color:white; line-height:1; }
+.summary-right .sr-val.under { color:#4ade80; }
+.summary-right .sr-val.over { color:#f87171; }
+.summary-right-divider { height:1px; background:rgba(255,255,255,0.1); }
+.score-footer { padding:10px 14px calc(var(--safe-bottom) + 10px); background:var(--card-bg); border-top:1px solid #e0ede8; flex-shrink:0; }
+.btn-next-hole { background:var(--green-mid); color:white; border:none; border-radius:14px; padding:15px; font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; cursor:pointer; width:100%; box-shadow:0 3px 12px rgba(45,106,79,0.3); transition:transform 0.1s; }
+.btn-next-hole:active { transform:scale(0.98); }
+.btn-next-hole.finish { background:var(--flag); box-shadow:0 3px 12px rgba(230,57,70,0.3); }
+
+/* ===== SCORECARDS (history list) ===== */
+#scorecard { background:var(--card-bg); }
+.scorecard-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px; }
+.section-label { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px; }
+.round-history-card { background:white; border-radius:14px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,0.07); margin-bottom:12px; cursor:pointer; transition:box-shadow 0.15s; }
+.round-history-card:active { box-shadow:0 2px 12px rgba(0,0,0,0.14); }
+.rh-header { background:var(--green-dark); padding:10px 14px; display:flex; align-items:center; justify-content:space-between; }
+.rh-date { font-family:'Bebas Neue',cursive; color:var(--sand); font-size:15px; letter-spacing:1px; }
+.rh-time { color:rgba(255,255,255,0.45); font-size:11px; }
+.rh-players { padding:10px 14px; display:flex; flex-direction:column; gap:7px; }
+.rh-player-row { display:flex; align-items:center; gap:9px; }
+.rh-avatar { width:26px;height:26px;border-radius:50%;color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bebas Neue',cursive; }
+.rh-name { flex:1; font-size:13px; font-weight:600; color:var(--text); }
+.rh-score { font-family:'Bebas Neue',cursive; font-size:18px; }
+.rh-net { font-size:11px; color:var(--muted); }
+.rh-arrow { color:#d1d5db; font-size:18px; padding-left:4px; }
+.round-detail-back { display:flex; align-items:center; gap:8px; padding:0 0 12px; cursor:pointer; }
+.round-detail-back-btn { background:rgba(255,255,255,0.12); border:none; color:var(--green-dark); width:30px;height:30px; border-radius:8px; font-size:18px; cursor:pointer; display:flex;align-items:center;justify-content:center; }
+.round-detail-back-lbl { font-size:13px; font-weight:600; color:var(--green-mid); }
+
+/* Scorecard table shared styles */
+.sc-wrap { border-radius:14px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,0.08); margin-bottom:14px; overflow-x:auto; background:white; }
+.sc-table { border-collapse:collapse; font-size:11px; min-width:100%; }
+.sc-table th { background:var(--green-dark); color:rgba(255,255,255,0.65); padding:7px 8px; text-align:center; font-size:10px; font-weight:600; white-space:nowrap; }
+.sc-table th.sticky-col { position:sticky; left:0; z-index:2; background:var(--green-dark); color:var(--sand); min-width:78px; text-align:left; padding-left:10px; }
+.sc-table td { padding:6px 8px; text-align:center; border-bottom:1px solid #f0f0f0; white-space:nowrap; }
+.sc-table td.sticky-col { position:sticky; left:0; background:white; font-weight:700; font-size:10px; text-align:left; padding-left:10px; color:var(--muted); z-index:1; border-right:1px solid #e5e7eb; }
+.sc-table tr.group-header td { background:#f8f9fa; font-family:'Bebas Neue',cursive; font-size:10px; letter-spacing:1px; color:var(--muted); padding:4px 8px 4px 10px; border-top:2px solid #e5e7eb; }
+.sc-table tr.group-header td.sticky-col { background:#f8f9fa; }
+.sc-table tr.subtotal-row td { background:#f0fdf4; font-weight:700; border-top:1.5px solid var(--border); }
+.sc-table tr.subtotal-row td.sticky-col { background:#f0fdf4; }
+.sc-table tr.grand-total-row td { background:var(--green-dark); color:white; font-weight:700; border-top:2px solid var(--green-bright); font-family:'Bebas Neue',cursive; font-size:13px; }
+.sc-table tr.grand-total-row td.sticky-col { background:var(--green-dark); color:var(--sand); }
+.sc-net-under { color:#16a34a; font-weight:700; }
+.sc-net-over { color:var(--flag); font-weight:700; }
+/* EDIT 3: Penalties row style */
+.sc-pen-val { color:var(--muted); font-size:10px; }
+.penalties-card { background:white; border-radius:14px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,0.07); margin-bottom:14px; }
+.penalties-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+.penalties-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #f3f4f6; }
+.penalties-row:last-child { border-bottom:none; }
+.pen-avatar { width:26px;height:26px;border-radius:50%;color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bebas Neue',cursive; }
+.pen-name { flex:1; font-size:13px; font-weight:600; }
+.pen-val { font-family:'Bebas Neue',cursive; font-size:20px; color:var(--green-dark); }
+
+/* ===== PROFILES ===== */
+#profiles { background:var(--card-bg); }
+.profiles-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px; }
+.profile-detail-card { background:white; border-radius:14px; padding:16px; box-shadow:0 1px 6px rgba(0,0,0,0.07); margin-bottom:14px; }
+.profile-detail-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.profile-detail-avatar { width:48px;height:48px;border-radius:50%;color:white;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center; font-family:'Bebas Neue',cursive; }
+.profile-detail-name { font-size:18px; font-weight:700; }
+.profile-detail-rounds { font-size:12px; color:var(--muted); }
+/* EDIT 2: 3-col grid for extended stats */
+.profile-stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.profile-stat-box { background:var(--card-bg); border-radius:10px; padding:9px 6px; text-align:center; }
+.profile-stat-box .val { font-family:'Bebas Neue',cursive; font-size:22px; color:var(--green-dark); }
+.profile-stat-box .val.small { font-size:16px; }
+.profile-stat-box .lbl { font-size:9px; color:var(--muted); margin-top:1px; }
+.profile-stat-section-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:12px 0 6px; }
+
+/* ===== SUMMARY ===== */
+#summary { background:var(--card-bg); }
+.summary-hero { background:linear-gradient(160deg, var(--green-dark), var(--green-mid)); padding:calc(var(--safe-top) + 12px) 20px 18px; flex-shrink:0; }
+.summary-hero-top { display:flex; align-items:center; gap:10px; }
+.summary-trophy { font-size:36px; }
+.summary-title { font-family:'Bebas Neue',cursive; font-size:28px; color:white; letter-spacing:2px; }
+.summary-date { color:rgba(255,255,255,0.45); font-size:12px; margin-top:2px; }
+.summary-winner-bar { margin-top:14px; background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:10px; }
+.sw-trophy { font-size:22px; }
+.sw-info { flex:1; }
+.sw-label { color:rgba(255,255,255,0.5); font-size:9px; text-transform:uppercase; letter-spacing:2px; }
+.sw-name { font-family:'Bebas Neue',cursive; font-size:22px; color:var(--sand); line-height:1.1; }
+.sw-detail { color:rgba(255,255,255,0.7); font-size:12px; font-weight:600; }
+.summary-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px; }
+.btn-new-round { background:var(--sand); color:var(--green-dark); border:none; border-radius:14px; padding:16px; font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; cursor:pointer; width:100%; margin-top:6px; }
+
+/* EDIT 6: Tie resolution UI */
+.tie-players-grid { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+.tie-player-btn { display:flex; align-items:center; gap:10px; background:#f8f9fa; border:2px solid var(--border); border-radius:12px; padding:10px 14px; cursor:pointer; width:100%; text-align:left; transition:all 0.15s; }
+.tie-player-btn:active { background:#f0fdf4; border-color:var(--green-bright); }
+.tie-player-avatar { width:32px; height:32px; border-radius:50%; color:white; font-size:12px; font-weight:700; display:flex;align-items:center;justify-content:center; font-family:'Bebas Neue',cursive; flex-shrink:0; }
+.tie-player-name { font-size:14px; font-weight:700; color:var(--text); }
+.tie-player-score { font-size:12px; color:var(--muted); }
+.tie-btn-declare { background:rgba(255,255,255,0.12); border:1.5px dashed rgba(255,255,255,0.5); border-radius:12px; padding:11px; color:rgba(255,255,255,0.85); font-size:14px; font-weight:600; cursor:pointer; width:100%; text-align:center; margin-top:4px; }
+.tie-btn-declare:active { background:rgba(255,255,255,0.2); }
+
+/* ===== MODAL ===== */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:300; align-items:center; justify-content:center; padding:24px; }
+.modal-overlay.show { display:flex; }
+.modal-box { background:white; border-radius:20px; padding:26px 22px; width:100%;max-width:340px; text-align:center; }
+.modal-icon { font-size:40px; margin-bottom:10px; }
+.modal-title { font-family:'Bebas Neue',cursive; font-size:24px; color:var(--text); margin-bottom:6px; }
+.modal-msg { font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:18px; }
+.modal-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.modal-btn { flex:1;min-width:calc(50% - 4px);padding:13px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer; }
+.modal-btn.primary { background:var(--green-mid); color:white; }
+.modal-btn.danger { background:var(--flag); color:white; }
+.modal-btn.cancel { background:#f3f4f6; color:var(--text); }
+.modal-btn.warn { background:#f59e0b; color:white; }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="home-bg-circle"></div>
+  <div class="home-bg-circle"></div>
+  <span class="home-flag">⛳</span>
+  <div style="position:relative;z-index:1;text-align:center;">
+    <div class="home-title">PUTTING<br><span>ZONE</span></div>
+    <div class="home-subtitle">Scorecard</div>
+  </div>
+  <div class="home-actions">
+    <button class="btn-main" onclick="showScreen('setup');initSetup()">NEW ROUND</button>
+    <!-- EDIT 1: Matches btn-outline style exactly -->
+    <button class="btn-outline" onclick="showScreen('scorecard');renderScorecardList()">VIEW SCORECARDS</button>
+    <button class="btn-outline" onclick="showScreen('profiles');renderProfilesScreen()">PLAYER PROFILES</button>
+  </div>
+  <div class="home-course-info">
+    <div class="course-name">THE PUTTING ZONE</div>
+    <div class="course-detail">18 Holes · Par 72 · Nashville, TN</div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div id="setup" class="screen">
+  <div class="nav-header">
+    <button class="nav-back" onclick="showScreen('home')">‹</button>
+    <div class="nav-title">NEW ROUND</div>
+  </div>
+  <div class="setup-body">
+    <div class="setup-section">
+      <div class="setup-label">Starting Hole</div>
+      <div class="start-hole-grid" id="start-hole-grid"></div>
+    </div>
+    <div class="setup-section">
+      <div class="setup-label">Select Players</div>
+      <div class="profile-grid" id="setup-profile-grid"></div>
+      <button class="btn-add-profile" onclick="showAddProfileForm()">+ Add New Player</button>
+      <div class="add-profile-form" id="add-profile-form" style="display:none;">
+        <input type="text" id="new-profile-name" placeholder="Player name" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="color-picker-label">Pick a color</div>
+        <div class="color-picker-row" id="new-profile-color-picker"></div>
+        <div class="add-profile-actions">
+          <button class="btn-cancel-profile" onclick="hideAddProfileForm()">Cancel</button>
+          <button class="btn-save-profile" onclick="saveNewProfile()">Save Player</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startRound()">START ROUND ›</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- SCORING -->
+<div id="scoring" class="screen">
+  <div class="score-header">
+    <div class="hole-nav-row">
+      <div class="hole-center">
+        <div class="hole-badge" id="hole-badge">HOLE 1</div>
+        <div class="hole-name-header" id="hole-name-header">Music City Mile</div>
+        <div class="hole-par-badge" id="hole-par-badge">Par 5</div>
+      </div>
+      <!-- Exit button sits at far right, unobtrusive -->
+      <button class="hole-exit-btn" style="margin-left:auto" onclick="confirmExitRound()" title="Exit Round">✕</button>
+    </div>
+    <div class="hole-strip-wrap" id="hole-strip-wrap">
+      <div class="hole-strip" id="hole-strip"></div>
+    </div>
+  </div>
+  <div class="player-switcher" id="player-switcher"></div>
+  <div class="score-body" id="score-body"></div>
+  <div class="score-footer">
+    <button class="btn-next-hole" id="btn-next" onclick="saveAndAdvance()">SAVE & NEXT ›</button>
+  </div>
+</div>
+
+<!-- SCORECARDS -->
+<div id="scorecard" class="screen">
+  <div class="nav-header">
+    <button class="nav-back" onclick="showScreen('home')">‹</button>
+    <div class="nav-title" id="scorecard-nav-title">SCORECARDS</div>
+  </div>
+  <div class="scorecard-body" id="scorecard-body"></div>
+</div>
+
+<!-- PROFILES -->
+<div id="profiles" class="screen">
+  <div class="nav-header">
+    <button class="nav-back" onclick="showScreen('home')">‹</button>
+    <div class="nav-title">PLAYER PROFILES</div>
+  </div>
+  <div class="profiles-body" id="profiles-body"></div>
+</div>
+
+<!-- SUMMARY -->
+<div id="summary" class="screen">
+  <div class="summary-hero">
+    <div class="summary-hero-top">
+      <div class="summary-trophy">🏆</div>
+      <div>
+        <div class="summary-title">ROUND COMPLETE</div>
+        <div class="summary-date" id="summary-date"></div>
+      </div>
+    </div>
+    <div class="summary-winner-bar" id="summary-winner-bar"></div>
+  </div>
+  <div class="summary-body" id="summary-body"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon" id="modal-icon">⛳</div>
+    <div class="modal-title" id="modal-title">Confirm</div>
+    <div class="modal-msg" id="modal-msg"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<script>
+const HOLES = [
+  { num:1,  name:"Music City Mile",      par:5, zones:3 },
+  { num:2,  name:"The Tennessee Waltz",  par:4, zones:2 },
+  { num:3,  name:"Putts In Low Places",  par:3, zones:1 },
+  { num:4,  name:"A Hard Day's Putt",    par:4, zones:2 },
+  { num:5,  name:"Grand Ole Grind",      par:5, zones:3 },
+  { num:6,  name:"Six String Swing",     par:4, zones:2 },
+  { num:7,  name:"The Gambler",          par:3, zones:1 },
+  { num:8,  name:"Born To Run",          par:4, zones:2 },
+  { num:9,  name:"Hound Dog(leg)",       par:4, zones:2 },
+  { num:10, name:"The Encore",           par:5, zones:3 },
+  { num:11, name:"Staying Alive",        par:4, zones:2 },
+  { num:12, name:"The Stage Dive",       par:4, zones:2 },
+  { num:13, name:"Jolene's Curve",       par:4, zones:2 },
+  { num:14, name:"Legends Row",          par:5, zones:3 },
+  { num:15, name:"Stairway To Heaven",   par:4, zones:2 },
+  { num:16, name:"Walk The Line",        par:3, zones:1 },
+  { num:17, name:"Folsom Fade",          par:3, zones:1 },
+  { num:18, name:"Ring Of Fire",         par:4, zones:2 },
+];
+
+const PLAYER_COLORS = [
+  '#40916c', // teal green
+  '#e63946', // red
+  '#f4a261', // orange
+  '#4361ee', // blue
+  '#7209b7', // purple
+  '#f4d35e', // gold/sand
+  '#e76f51', // coral
+  '#2ec4b6', // cyan
+  '#3a86ff', // sky blue
+  '#ff006e', // hot pink
+  '#8338ec', // violet
+  '#fb5607', // bright orange
+];
+
+// Smart initials
+function getInitials(name) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 1) return words[0][0].toUpperCase();
+  return words.slice(0, 3).map(w => w[0].toUpperCase()).join('');
+}
+
+// ===== PROFILES =====
+function getProfiles() {
+  try { return JSON.parse(localStorage.getItem('pz_profiles') || '[]'); } catch { return []; }
+}
+function saveProfiles(p) { localStorage.setItem('pz_profiles', JSON.stringify(p)); }
+function createProfile(name, colorIdx) {
+  const profiles = getProfiles();
+  const ci = (colorIdx !== undefined) ? colorIdx : (profiles.length % PLAYER_COLORS.length);
+  const profile = { id: Date.now().toString(), name: name.trim(), colorIdx: ci, createdAt: Date.now() };
+  profiles.push(profile);
+  saveProfiles(profiles);
+  return profile;
+}
+function updateProfileColor(id, colorIdx) {
+  const profiles = getProfiles();
+  const p = profiles.find(p => p.id === id);
+  if (p) { p.colorIdx = colorIdx; saveProfiles(profiles); }
+}
+function deleteProfile(id) { saveProfiles(getProfiles().filter(p => p.id !== id)); }
+
+// ===== STATE =====
+let state = {
+  selectedProfileIds: [], startHole: 0, currentHole: 0, currentPlayer: 0,
+  scores: [], activePlayers: [], roundStarted: false,
+};
+
+function emptyScore(hole) {
+  return { strokes: hole.par, zonesHit: new Array(hole.zones).fill(false), penalties: 0, saved: false };
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===== SETUP =====
+function initSetup() {
+  state.selectedProfileIds = [];
+  renderStartHoleGrid();
+  renderSetupProfileGrid();
+}
+
+function renderStartHoleGrid() {
+  document.getElementById('start-hole-grid').innerHTML = HOLES.map((h, i) => `
+    <div class="start-hole-btn ${i === state.startHole ? 'selected' : ''}" onclick="selectStartHole(${i})">
+      ${h.num}<div class="hole-par-hint">Par ${h.par}</div>
+    </div>
+  `).join('');
+}
+
+function selectStartHole(idx) { state.startHole = idx; renderStartHoleGrid(); }
+
+function renderSetupProfileGrid() {
+  const profiles = getProfiles();
+  const grid = document.getElementById('setup-profile-grid');
+  if (!profiles.length) {
+    grid.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:13px;padding:12px 0;">No players yet. Add one below!</div>`;
+    return;
+  }
+  grid.innerHTML = profiles.map(p => {
+    const selected = state.selectedProfileIds.includes(p.id);
+    const color = PLAYER_COLORS[p.colorIdx];
+    const stats = getProfileStats(p.id);
+    const hint = stats.rounds > 0 ? `${stats.rounds} round${stats.rounds!==1?'s':''} · Avg ${stats.avgScore}` : 'No rounds yet';
+    return `
+      <div class="profile-select-card ${selected?'selected':''}" onclick="toggleProfileSelect('${p.id}')">
+        <div class="profile-avatar" style="background:${color}">${getInitials(p.name)}</div>
+        <div class="profile-info">
+          <div class="profile-name">${escHtml(p.name)}</div>
+          <div class="profile-stats-hint">${hint}</div>
+        </div>
+        <div class="profile-check"></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleProfileSelect(id) {
+  const idx = state.selectedProfileIds.indexOf(id);
+  if (idx === -1) { if (state.selectedProfileIds.length >= 5) return; state.selectedProfileIds.push(id); }
+  else state.selectedProfileIds.splice(idx, 1);
+  renderSetupProfileGrid();
+}
+
+let selectedNewColorIdx = 0;
+
+function renderColorPicker(pickerId, selectedIdx, onClickFn) {
+  const el = document.getElementById(pickerId);
+  if (!el) return;
+  el.innerHTML = PLAYER_COLORS.map((c, i) => `
+    <div class="color-swatch ${i === selectedIdx ? 'selected' : ''}"
+      style="background:${c}"
+      onclick="${onClickFn}(${i})">
+    </div>
+  `).join('');
+}
+
+function showAddProfileForm() {
+  const profiles = getProfiles();
+  selectedNewColorIdx = profiles.length % PLAYER_COLORS.length;
+  document.getElementById('add-profile-form').style.display = 'block';
+  document.getElementById('new-profile-name').value = '';
+  renderColorPicker('new-profile-color-picker', selectedNewColorIdx, 'selectNewColor');
+  setTimeout(() => document.getElementById('new-profile-name').focus(), 100);
+}
+
+function selectNewColor(idx) {
+  selectedNewColorIdx = idx;
+  renderColorPicker('new-profile-color-picker', idx, 'selectNewColor');
+}
+
+function hideAddProfileForm() { document.getElementById('add-profile-form').style.display = 'none'; }
+
+function saveNewProfile() {
+  const name = document.getElementById('new-profile-name').value.trim();
+  if (!name) return;
+  const profile = createProfile(name, selectedNewColorIdx);
+  state.selectedProfileIds.push(profile.id);
+  hideAddProfileForm();
+  renderSetupProfileGrid();
+}
+
+function startRound() {
+  if (!state.selectedProfileIds.length) {
+    showModal('⛳','Select Players','Please select at least one player to start a round.',[{label:'OK',cls:'primary',action:'closeModal()'}]);
+    return;
+  }
+  const profiles = getProfiles();
+  state.activePlayers = state.selectedProfileIds.map(id => profiles.find(p => p.id === id)).filter(Boolean);
+  state.scores = state.activePlayers.map(() => HOLES.map(h => emptyScore(h)));
+  state.currentHole = state.startHole;
+  state.currentPlayer = 0;
+  state.roundStarted = true;
+  showScreen('scoring');
+  renderScoringScreen();
+}
+
+// ===== EDIT 5: Exit round =====
+function confirmExitRound() {
+  showModal('✕', 'Exit Round?', 'Your progress will be lost. Are you sure you want to exit this round?', [
+    { label: 'Stay', cls: 'primary', action: 'closeModal()' },
+    { label: 'Exit Round', cls: 'danger', action: 'exitRound()' },
+  ]);
+}
+
+function exitRound() {
+  closeModal();
+  state.roundStarted = false;
+  showScreen('home');
+}
+
+// ===== SCORING =====
+function renderScoringScreen() {
+  const hole = HOLES[state.currentHole];
+  document.getElementById('hole-badge').textContent = `HOLE ${hole.num}`;
+  document.getElementById('hole-name-header').textContent = hole.name;
+  document.getElementById('hole-par-badge').textContent = `Par ${hole.par}`;
+  renderHoleStrip();
+  renderPlayerSwitcher();
+  renderScoreBody();
+  const isLast = state.currentHole === HOLES.length - 1;
+  const btn = document.getElementById('btn-next');
+  btn.textContent = isLast ? 'FINISH ROUND ✓' : 'SAVE & NEXT ›';
+  btn.className = 'btn-next-hole' + (isLast ? ' finish' : '');
+}
+
+function renderHoleStrip() {
+  const strip = document.getElementById('hole-strip');
+  strip.innerHTML = HOLES.map((h, i) => {
+    const anyScored = state.activePlayers.some((_, pi) => state.scores[pi][i].saved);
+    const isCurrent = i === state.currentHole;
+    let cls = 'hole-pip';
+    if (isCurrent && anyScored) cls += ' current scored';
+    else if (isCurrent) cls += ' current';
+    else if (anyScored) cls += ' scored';
+    const checkmark = anyScored ? '✓' : `${h.par}`;
+    return `<div class="${cls}" onclick="jumpToHole(${i})">
+      <div class="hole-pip-num">${h.num}</div>
+      <div class="hole-pip-check">${checkmark}</div>
+    </div>`;
+  }).join('');
+  setTimeout(() => {
+    const cur = strip.querySelector('.current');
+    if (cur) cur.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  }, 50);
+}
+
+function renderPlayerSwitcher() {
+  const switcher = document.getElementById('player-switcher');
+  if (state.activePlayers.length <= 1) { switcher.style.display = 'none'; return; }
+  switcher.style.display = 'flex';
+  switcher.innerHTML = state.activePlayers.map((p, i) => {
+    const color = PLAYER_COLORS[p.colorIdx];
+    const net = calcRunningNet(i);
+    const netStr = net === null ? '–' : net === 0 ? 'E' : net > 0 ? `+${net}` : `${net}`;
+    return `
+      <button class="player-chip ${i===state.currentPlayer?'active':''}" onclick="switchPlayer(${i})">
+        <div class="player-chip-avatar" style="background:${color}">${getInitials(p.name)}</div>
+        <span class="player-chip-name">${escHtml(p.name.split(' ')[0])}</span>
+        <span class="player-chip-score">${netStr}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function calcRunningNet(playerIdx) {
+  let net = 0, par = 0, hasAny = false;
+  for (let h = 0; h < HOLES.length; h++) {
+    const s = state.scores[playerIdx][h];
+    if (s && s.saved) {
+      net += Math.max(0, s.strokes - s.zonesHit.filter(Boolean).length);
+      par += HOLES[h].par; hasAny = true;
+    }
+  }
+  return hasAny ? net - par : null;
+}
+
+function switchPlayer(idx) { state.currentPlayer = idx; renderScoringScreen(); }
+
+function renderScoreBody() {
+  const hole = HOLES[state.currentHole];
+  const score = state.scores[state.currentPlayer][state.currentHole];
+  document.getElementById('score-body').innerHTML =
+    renderHoleStats(hole) + renderManualInputs(hole, score) + renderScoreSummaryBar(hole, score);
+}
+
+// EDIT 4: zones per round instead of zone%
+function renderHoleStats(hole) {
+  const rounds = getSavedRounds();
+  const playerId = state.activePlayers[state.currentPlayer].id;
+  const holeIdx = hole.num - 1;
+  let netScores = [], totalZones = 0, totalZonePossible = 0, penalties = 0, rounds_count = 0;
+  rounds.forEach(r => {
+    r.players.forEach((rp, pi) => {
+      if (rp.id !== playerId) return;
+      const s = r.scores[pi][holeIdx];
+      if (s && s.saved) {
+        const zones = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+        netScores.push(Math.max(0, s.strokes - zones));
+        totalZones += zones; totalZonePossible += hole.zones; penalties += s.penalties || 0; rounds_count++;
+      }
+    });
+  });
+  if (!netScores.length) return '';
+  const avg = (netScores.reduce((a,b)=>a+b,0)/netScores.length).toFixed(1);
+  const best = Math.min(...netScores);
+  // EDIT 4: zones per round
+  const zonesPerRound = rounds_count > 0 ? (totalZones / rounds_count).toFixed(1) : '0.0';
+  const penPct = rounds_count > 0 ? (penalties/rounds_count).toFixed(1) : '0.0';
+  const bestVsPar = best - hole.par;
+  const playerName = state.activePlayers[state.currentPlayer].name.split(' ')[0];
+  return `
+    <div class="hole-stats-card">
+      <div class="hole-stats-title">${escHtml(playerName)}'s Stats — Hole ${hole.num}</div>
+      <div class="hole-stats-row">
+        <div class="hole-stat"><div class="hole-stat-val">${avg}</div><div class="hole-stat-lbl">Avg Score</div></div>
+        <div class="hole-stat"><div class="hole-stat-val ${bestVsPar<0?'under':bestVsPar>0?'over':''}">${best}</div><div class="hole-stat-lbl">Best</div></div>
+        <div class="hole-stat"><div class="hole-stat-val">${zonesPerRound}</div><div class="hole-stat-lbl">Zone Avg</div></div>
+        <div class="hole-stat"><div class="hole-stat-val">${penPct}</div><div class="hole-stat-lbl">Penalty Avg</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderManualInputs(hole, score) {
+  const zoneChips = score.zonesHit.map((hit, i) => `
+    <div class="zone-chip ${hit?'hit':''}" onclick="toggleZone(${i})">
+      <div class="zone-chip-dot"></div>Zone ${i+1}
+    </div>
+  `).join('');
+  const playerName = state.activePlayers[state.currentPlayer].name.split(' ')[0];
+  const color = PLAYER_COLORS[state.activePlayers[state.currentPlayer].colorIdx];
+  return `
+    <div class="score-inputs-card">
+      <div class="score-section-header" style="display:flex;align-items:center;gap:7px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:${color};display:inline-block;flex-shrink:0;"></span>
+        ${escHtml(playerName)}
+      </div>
+      <div class="stroke-stepper-wrap">
+        <div class="stroke-stepper-label">
+          <div class="stroke-stepper-label-text">Strokes Taken</div>
+        </div>
+        <div class="stroke-stepper">
+          <button class="stroke-step-btn" onclick="adjustStrokes(-1)">−</button>
+          <div class="stroke-step-val" id="stroke-val">${score.strokes}</div>
+          <button class="stroke-step-btn" onclick="adjustStrokes(1)">+</button>
+        </div>
+      </div>
+      <div class="score-section-header">Zones Hit</div>
+      <div class="zones-wrap"><div class="zones-grid" id="zones-grid">${zoneChips}</div></div>
+      <div class="score-section-header">Penalties</div>
+      <div class="input-row">
+        <div class="input-row-label">
+          <div class="input-row-label-text">Rough penalties</div>
+          <div class="input-row-sub">Already in raw strokes — tracking only</div>
+        </div>
+        <div class="input-stepper">
+          <button class="stepper-btn" onclick="adjustPenalties(-1)">−</button>
+          <div class="stepper-val" id="penalty-val">${score.penalties}</div>
+          <button class="stepper-btn" onclick="adjustPenalties(1)">+</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// EDIT 4: Removed vs par label, kept player name
+function renderScoreSummaryBar(hole, score) {
+  const zonesCount = score.zonesHit.filter(Boolean).length;
+  const holeNet = Math.max(0, score.strokes - zonesCount);
+  const holeVsPar = holeNet - hole.par;
+  const holeVsParStr = holeVsPar === 0 ? 'E' : holeVsPar > 0 ? `+${holeVsPar}` : `${holeVsPar}`;
+  const holeLabel = holeVsPar < 0 ? (holeVsPar===-1?'BIRDIE':holeVsPar===-2?'EAGLE':'EAGLE+') :
+    holeVsPar > 0 ? (holeVsPar===1?'BOGEY':holeVsPar===2?'DOUBLE':holeVsPar===3?'TRIPLE':'OVER') : 'PAR';
+  const holeClass = holeVsPar < 0 ? 'under' : holeVsPar > 0 ? 'over' : 'even';
+  const runNet = calcRunningNet(state.currentPlayer);
+  const runStr = runNet === null ? '–' : runNet === 0 ? 'E' : runNet > 0 ? `+${runNet}` : `${runNet}`;
+  const runClass = runNet === null ? 'even' : runNet < 0 ? 'under' : runNet > 0 ? 'over' : 'even';
+  const firstName = state.activePlayers[state.currentPlayer].name.split(' ')[0];
+  return `
+    <div class="score-summary-bar">
+      <div class="summary-left">
+        <div class="lbl">Round Score</div>
+        <div class="big-val ${runClass}">${runStr}</div>
+        <div class="player-name-lbl">${escHtml(firstName)}</div>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-right">
+        <div class="summary-right-row">
+          <div class="sr-lbl">This Hole Net</div>
+          <div class="sr-val ${holeClass}">${holeVsParStr} · ${holeLabel}</div>
+        </div>
+        <div class="summary-right-divider"></div>
+        <div class="summary-right-row">
+          <div class="sr-lbl">Strokes</div>
+          <div class="sr-val">${score.strokes}</div>
+        </div>
+        <div class="summary-right-row">
+          <div class="sr-lbl">Zones Hit</div>
+          <div class="sr-val">${zonesCount}</div>
+        </div>
+        <div class="summary-right-row">
+          <div class="sr-lbl">Net Score</div>
+          <div class="sr-val">${holeNet}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function adjustStrokes(delta) {
+  const score = state.scores[state.currentPlayer][state.currentHole];
+  score.strokes = Math.max(1, Math.min(20, score.strokes + delta));
+  document.getElementById('stroke-val').textContent = score.strokes;
+  updateScoreSummaryBar();
+}
+
+function updateScoreSummaryBar() {
+  const hole = HOLES[state.currentHole];
+  const score = state.scores[state.currentPlayer][state.currentHole];
+  const existing = document.getElementById('score-body').querySelector('.score-summary-bar');
+  if (existing) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = renderScoreSummaryBar(hole, score);
+    existing.replaceWith(tmp.firstChild);
+  }
+  renderPlayerSwitcher();
+}
+
+function toggleZone(idx) {
+  const score = state.scores[state.currentPlayer][state.currentHole];
+  score.zonesHit[idx] = !score.zonesHit[idx];
+  const grid = document.getElementById('zones-grid');
+  if (grid) {
+    grid.innerHTML = score.zonesHit.map((hit, i) => `
+      <div class="zone-chip ${hit?'hit':''}" onclick="toggleZone(${i})">
+        <div class="zone-chip-dot"></div>Zone ${i+1}
+      </div>
+    `).join('');
+  }
+  updateScoreSummaryBar();
+}
+
+function adjustPenalties(delta) {
+  const score = state.scores[state.currentPlayer][state.currentHole];
+  score.penalties = Math.max(0, score.penalties + delta);
+  document.getElementById('penalty-val').textContent = score.penalties;
+}
+
+function prevHole() {
+  if (state.currentHole > 0) { state.currentHole--; renderScoringScreen(); }
+}
+
+function nextHoleArrow() {
+  if (state.currentHole < HOLES.length - 1) { state.currentHole++; renderScoringScreen(); }
+}
+
+function jumpToHole(idx) { state.currentHole = idx; renderScoringScreen(); }
+
+function saveAndAdvance() {
+  state.scores[state.currentPlayer][state.currentHole].saved = true;
+  const allSaved = state.activePlayers.every((_, pi) => state.scores[pi][state.currentHole].saved);
+  if (!allSaved) {
+    state.currentPlayer = state.activePlayers.findIndex((_, pi) => !state.scores[pi][state.currentHole].saved);
+    renderScoringScreen(); return;
+  }
+  if (state.currentHole >= HOLES.length - 1) { finishRound(); return; }
+  state.currentHole++;
+  state.currentPlayer = 0;
+  renderScoringScreen();
+  document.getElementById('score-body').scrollTop = 0;
+}
+
+// ===== FINISH =====
+function finishRound() {
+  const round = {
+    id: Date.now().toString(),
+    date: new Date().toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric',year:'numeric'}),
+    time: new Date().toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'}),
+    players: state.activePlayers.map(p => ({id:p.id,name:p.name,colorIdx:p.colorIdx})),
+    scores: state.scores, startHole: state.startHole,
+  };
+  const rounds = getSavedRounds();
+  rounds.push(round);
+  localStorage.setItem('pz_rounds', JSON.stringify(rounds));
+  showScreen('summary');
+  renderSummary(round);
+}
+
+// ===== SHARED SCORECARD TABLE BUILDER =====
+// EDIT 3: Added Penalties row to scorecard table
+function buildScorecardHTML(round) {
+  const front = HOLES.slice(0, 9);
+  const back = HOLES.slice(9, 18);
+
+  function playerSectionData(pi, holeList) {
+    return holeList.map(h => { const s = round.scores[pi][h.num - 1]; return s && s.saved ? s : null; });
+  }
+
+  function sectionTotals(pi, holeList) {
+    let strokes=0, zones=0, net=0, par=0, penalties=0;
+    holeList.forEach(h => {
+      const s = round.scores[pi][h.num - 1];
+      if (s && s.saved) {
+        const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+        strokes += s.strokes; zones += z; net += Math.max(0, s.strokes - z); par += h.par; penalties += s.penalties||0;
+      }
+    });
+    return {strokes, zones, net, par, penalties};
+  }
+
+  function cellNet(s, h) {
+    if (!s) return `<td>–</td>`;
+    const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+    const n = Math.max(0, s.strokes - z);
+    const d = n - h.par;
+    return `<td class="${d<0?'sc-net-under':d>0?'sc-net-over':''}">${n}</td>`;
+  }
+
+  function cellPen(s) {
+    if (!s) return `<td>–</td>`;
+    const p = s.penalties || 0;
+    return `<td class="${p > 0 ? 'sc-net-over' : 'sc-pen-val'}">${p > 0 ? p : '·'}</td>`;
+  }
+
+  let html = `<table class="sc-table">
+    <thead>
+      <tr>
+        <th class="sticky-col">PLAYER</th>
+        ${front.map(h=>`<th>${h.num}</th>`).join('')}
+        <th style="background:#2a5240;color:var(--sand)">OUT</th>
+        ${back.map(h=>`<th>${h.num}</th>`).join('')}
+        <th style="background:#2a5240;color:var(--sand)">IN</th>
+        <th style="background:#1a3a2a;color:var(--sand)">TOT</th>
+      </tr>
+      <tr>
+        <td class="sticky-col" style="background:#f8f9fa;color:var(--muted);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">PAR</td>
+        ${front.map(h=>`<td style="background:#f8f9fa;color:var(--muted)">${h.par}</td>`).join('')}
+        <td style="background:#f0f7f4;font-weight:700;color:var(--green-dark)">${front.reduce((a,h)=>a+h.par,0)}</td>
+        ${back.map(h=>`<td style="background:#f8f9fa;color:var(--muted)">${h.par}</td>`).join('')}
+        <td style="background:#f0f7f4;font-weight:700;color:var(--green-dark)">${back.reduce((a,h)=>a+h.par,0)}</td>
+        <td style="background:#f0fdf4;font-weight:700;color:var(--green-dark)">${HOLES.reduce((a,h)=>a+h.par,0)}</td>
+      </tr>
+    </thead><tbody>`;
+
+  round.players.forEach((p, pi) => {
+    const color = PLAYER_COLORS[p.colorIdx];
+    const frontData = playerSectionData(pi, front);
+    const backData = playerSectionData(pi, back);
+    const fTot = sectionTotals(pi, front);
+    const bTot = sectionTotals(pi, back);
+    const total = { strokes: fTot.strokes+bTot.strokes, zones: fTot.zones+bTot.zones, net: fTot.net+bTot.net, par: fTot.par+bTot.par, penalties: fTot.penalties+bTot.penalties };
+    const totalVsPar = total.net - total.par;
+    const totalStr = totalVsPar===0?'E':totalVsPar>0?`+${totalVsPar}`:`${totalVsPar}`;
+
+    html += `
+      <tr class="group-header">
+        <td class="sticky-col" colspan="${front.length+back.length+3}" style="padding-left:10px">
+          <span style="display:inline-flex;align-items:center;gap:6px">
+            <span style="width:12px;height:12px;border-radius:50%;background:${color};display:inline-block"></span>
+            ${escHtml(p.name).toUpperCase()}
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="sticky-col">Strokes</td>
+        ${frontData.map(s=>`<td>${s?s.strokes:'–'}</td>`).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${fTot.strokes||'–'}</td>
+        ${backData.map(s=>`<td>${s?s.strokes:'–'}</td>`).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${bTot.strokes||'–'}</td>
+        <td style="background:#f0fdf4;font-weight:700">${total.strokes||'–'}</td>
+      </tr>
+      <tr>
+        <td class="sticky-col">Zones</td>
+        ${frontData.map(s=>{if(!s)return`<td>–</td>`;const z=s.zonesHit?s.zonesHit.filter(Boolean).length:0;return`<td>${z}</td>`;}).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${fTot.zones}</td>
+        ${backData.map(s=>{if(!s)return`<td>–</td>`;const z=s.zonesHit?s.zonesHit.filter(Boolean).length:0;return`<td>${z}</td>`;}).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${bTot.zones}</td>
+        <td style="background:#f0fdf4;font-weight:700">${fTot.zones+bTot.zones}</td>
+      </tr>
+      <tr>
+        <td class="sticky-col" style="color:var(--muted)">Penalties</td>
+        ${frontData.map(s=>cellPen(s)).join('')}
+        <td style="background:#f0f7f4;font-weight:700;color:${fTot.penalties>0?'var(--flag)':'var(--muted)'}">${fTot.penalties>0?fTot.penalties:'·'}</td>
+        ${backData.map(s=>cellPen(s)).join('')}
+        <td style="background:#f0f7f4;font-weight:700;color:${bTot.penalties>0?'var(--flag)':'var(--muted)'}">${bTot.penalties>0?bTot.penalties:'·'}</td>
+        <td style="background:#f0fdf4;font-weight:700;color:${total.penalties>0?'var(--flag)':'var(--muted)'}">${total.penalties>0?total.penalties:'·'}</td>
+      </tr>
+      <tr class="subtotal-row">
+        <td class="sticky-col">Net</td>
+        ${frontData.map((s,i)=>cellNet(s,front[i])).join('')}
+        <td style="background:#e8f7ef;font-weight:700">${fTot.net||'–'}</td>
+        ${backData.map((s,i)=>cellNet(s,back[i])).join('')}
+        <td style="background:#e8f7ef;font-weight:700">${bTot.net||'–'}</td>
+        <td class="${totalVsPar<0?'sc-net-under':totalVsPar>0?'sc-net-over':''}" style="font-weight:800;font-size:13px">${total.net} (${totalStr})</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  return `<div class="sc-wrap">${html}</div>`;
+}
+
+// ===== EDIT 6: Tie handling =====
+function calcRoundTotals(round) {
+  return round.players.map((p, pi) => {
+    let net=0, par=0, zones=0, penalties=0, strokes=0;
+    round.scores[pi].forEach((s, hi) => {
+      if (s && s.saved) {
+        const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+        net += Math.max(0, s.strokes - z); par += HOLES[hi].par; zones += z; penalties += s.penalties||0; strokes += s.strokes;
+      }
+    });
+    return {...p, net, par, zones, penalties, strokes, vsPar: net - par, pi};
+  }).sort((a,b) => a.vsPar - b.vsPar);
+}
+
+function renderSummaryWinnerBar(round, overrideWinner) {
+  const totals = calcRoundTotals(round);
+  const topScore = totals[0].vsPar;
+  const tied = totals.filter(t => t.vsPar === topScore);
+  const isTied = tied.length > 1 && !overrideWinner;
+
+  if (overrideWinner === 'tie') {
+    // Declared tie
+    document.getElementById('summary-winner-bar').innerHTML = `
+      <div class="sw-trophy">🤝</div>
+      <div class="sw-info">
+        <div class="sw-label">Result</div>
+        <div class="sw-name" style="font-size:18px">${tied.map(t=>escHtml(t.name.split(' ')[0])).join(' & ')}</div>
+        <div class="sw-detail">${topScore===0?'E':topScore>0?`+${topScore}`:topScore} · Tied</div>
+      </div>
+    `;
+    return;
+  }
+
+  const winner = overrideWinner ? totals.find(t=>t.id===overrideWinner) || totals[0] : totals[0];
+
+  if (isTied) {
+    // Show tie resolution UI
+    const tiedPlayersHtml = tied.map(t => {
+      const color = PLAYER_COLORS[t.colorIdx];
+      return `
+        <button class="tie-player-btn" onclick="resolveTie('${round.id}', '${t.id}')">
+          <div class="tie-player-avatar" style="background:${color}">${getInitials(t.name)}</div>
+          <div>
+            <div class="tie-player-name">${escHtml(t.name)}</div>
+            <div class="tie-player-score">${t.net} net · ${t.vsPar===0?'E':t.vsPar>0?`+${t.vsPar}`:t.vsPar}</div>
+          </div>
+          <div style="margin-left:auto;color:var(--green-bright);font-size:18px">›</div>
+        </button>
+      `;
+    }).join('');
+    document.getElementById('summary-winner-bar').innerHTML = `
+      <div style="width:100%">
+        <div class="sw-label" style="margin-bottom:4px">🤝 TIE — Select tiebreaker winner or declare tied:</div>
+        <div class="tie-players-grid">${tiedPlayersHtml}</div>
+        <button class="tie-btn-declare" onclick="resolveTie('${round.id}', 'tie')">Declare Tied (No Tiebreaker)</button>
+      </div>
+    `;
+    return;
+  }
+
+  document.getElementById('summary-winner-bar').innerHTML = `
+    <div class="sw-trophy">🏆</div>
+    <div class="sw-info">
+      <div class="sw-label">Winner</div>
+      <div class="sw-name">${escHtml(winner.name)}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="color:var(--sand);font-family:'Bebas Neue',cursive;font-size:24px">${winner.vsPar===0?'E':winner.vsPar>0?`+${winner.vsPar}`:winner.vsPar}</div>
+      <div class="sw-detail" style="font-size:11px">${winner.net} net · ${winner.strokes} strokes</div>
+    </div>
+  `;
+}
+
+// Track current summary round
+let currentSummaryRound = null;
+let currentSummaryOverride = null;
+
+function resolveTie(roundId, winnerId) {
+  currentSummaryOverride = winnerId;
+  renderSummaryWinnerBar(currentSummaryRound, winnerId);
+}
+
+// ===== SUMMARY (post-round) =====
+function renderSummary(round) {
+  currentSummaryRound = round;
+  currentSummaryOverride = null;
+  document.getElementById('summary-date').textContent = `${round.date}${round.time ? ' · ' + round.time : ''}`;
+  renderSummaryWinnerBar(round, null);
+  document.getElementById('summary-body').innerHTML = `
+    ${buildScorecardHTML(round)}
+    <button class="btn-new-round" onclick="showScreen('home')">BACK TO HOME</button>
+  `;
+}
+
+// ===== SCORECARDS LIST (history) =====
+function renderScorecardList() {
+  document.getElementById('scorecard-nav-title').textContent = 'SCORECARDS';
+  const rounds = getSavedRounds();
+  const body = document.getElementById('scorecard-body');
+  if (!rounds.length) {
+    body.innerHTML = `<div style="text-align:center;color:var(--muted);padding:40px 20px;font-size:15px;">No rounds recorded yet.<br>Start a round to see your history here.</div>`;
+    return;
+  }
+  const sorted = [...rounds].reverse();
+  let html = `<div class="section-label">${rounds.length} Round${rounds.length!==1?'s':''} Recorded</div>`;
+  sorted.forEach((r, ri) => {
+    const playerTotals = r.players.map((p, pi) => {
+      let net=0, par=0, strokes=0;
+      r.scores[pi].forEach((s, hi) => {
+        if (s && s.saved) {
+          const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+          net += Math.max(0, s.strokes - z); par += HOLES[hi].par; strokes += s.strokes;
+        }
+      });
+      return {...p, net, vsPar: net - par, strokes};
+    }).sort((a,b) => a.vsPar - b.vsPar);
+    const roundIdx = rounds.length - 1 - ri;
+    html += `<div class="round-history-card" onclick="openRoundDetail(${roundIdx})">
+      <div class="rh-header">
+        <div class="rh-date">${r.date}</div>
+        <div class="rh-time">${r.time || ''}</div>
+      </div>
+      <div class="rh-players">
+        ${playerTotals.map((p, i) => {
+          const color = PLAYER_COLORS[p.colorIdx];
+          const vsStr = p.vsPar===0?'E':p.vsPar>0?`+${p.vsPar}`:`${p.vsPar}`;
+          const scoreColor = p.vsPar<0?'#16a34a':p.vsPar>0?'var(--flag)':'var(--muted)';
+          return `<div class="rh-player-row">
+            <div class="rh-avatar" style="background:${color}">${getInitials(p.name)}</div>
+            <div class="rh-name">${escHtml(p.name)}</div>
+            <div class="rh-score" style="color:${scoreColor}">${vsStr}</div>
+            <div class="rh-net">${p.net} net</div>
+            ${i===0?`<div class="rh-arrow">›</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+  body.innerHTML = html;
+}
+
+function openRoundDetail(roundIdx) {
+  const rounds = getSavedRounds();
+  const round = rounds[roundIdx];
+  if (!round) return;
+  document.getElementById('scorecard-nav-title').textContent = round.date;
+  const body = document.getElementById('scorecard-body');
+
+  // EDIT 6: Detect ties in history
+  const totals = calcRoundTotals(round);
+  const topScore = totals[0].vsPar;
+  const tied = totals.filter(t => t.vsPar === topScore);
+  const winner = totals[0];
+  const isTied = tied.length > 1;
+
+  let winnerHtml;
+  if (isTied) {
+    winnerHtml = `
+      <div style="background:var(--green-dark);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.12)">
+        <div style="font-size:24px">🤝</div>
+        <div style="flex:1">
+          <div style="color:rgba(255,255,255,0.5);font-size:9px;text-transform:uppercase;letter-spacing:2px">Tie · ${round.date}${round.time?' · '+round.time:''}</div>
+          <div style="font-family:'Bebas Neue',cursive;font-size:20px;color:var(--sand)">${tied.map(t=>escHtml(t.name.split(' ')[0])).join(' & ')}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Bebas Neue',cursive;font-size:26px;color:white">${topScore===0?'E':topScore>0?`+${topScore}`:topScore}</div>
+        </div>
+      </div>
+    `;
+  } else {
+    winnerHtml = `
+      <div style="background:var(--green-dark);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.12)">
+        <div style="font-size:24px">🏆</div>
+        <div style="flex:1">
+          <div style="color:rgba(255,255,255,0.5);font-size:9px;text-transform:uppercase;letter-spacing:2px">Winner · ${round.date}${round.time?' · '+round.time:''}</div>
+          <div style="font-family:'Bebas Neue',cursive;font-size:22px;color:var(--sand)">${escHtml(winner.name)}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Bebas Neue',cursive;font-size:26px;color:${winner.vsPar<0?'#4ade80':winner.vsPar>0?'#f87171':'white'}">${winner.vsPar===0?'E':winner.vsPar>0?`+${winner.vsPar}`:winner.vsPar}</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:11px">${winner.net} net</div>
+        </div>
+      </div>
+    `;
+  }
+
+  body.innerHTML = `
+    <div class="round-detail-back" onclick="renderScorecardList()">
+      <button class="round-detail-back-btn">‹</button>
+      <span class="round-detail-back-lbl">All Rounds</span>
+    </div>
+    ${winnerHtml}
+    ${buildScorecardHTML(round)}
+  `;
+}
+
+// ===== PROFILES SCREEN =====
+function renderProfilesScreen() {
+  const profiles = getProfiles();
+  const body = document.getElementById('profiles-body');
+  if (!profiles.length) {
+    body.innerHTML = `<div style="text-align:center;color:var(--muted);padding:40px 20px;font-size:15px;">No players yet.<br>Add players when starting a new round.</div>`;
+    return;
+  }
+  body.innerHTML = profiles.map(p => {
+    const color = PLAYER_COLORS[p.colorIdx];
+    const stats = getProfileStats(p.id);
+    return `
+      <div class="profile-detail-card">
+        <div class="profile-detail-header">
+          <div class="profile-detail-avatar" style="background:${color};cursor:pointer" id="avatar-${p.id}"
+            onclick="toggleColorPicker('${p.id}')"
+            title="Tap to change color">
+            ${getInitials(p.name)}
+          </div>
+          <div>
+            <div class="profile-detail-name">${escHtml(p.name)}</div>
+            <div class="profile-detail-rounds">${stats.rounds} round${stats.rounds!==1?'s':''} played</div>
+            <div style="font-size:10px;color:var(--green-bright);margin-top:2px">Tap icon to change color</div>
+          </div>
+          <button onclick="confirmDeleteProfile('${p.id}','${escHtml(p.name)}')" style="margin-left:auto;background:none;border:none;color:#d1d5db;font-size:22px;cursor:pointer;padding:4px;">×</button>
+        </div>
+        <div id="color-picker-wrap-${p.id}" style="display:none;padding:8px 0 4px;">
+          <div class="color-picker-label">Pick a color</div>
+          <div class="color-picker-row" id="color-picker-${p.id}"></div>
+        </div>
+        ${stats.rounds > 0 ? `
+          <div class="profile-stat-grid">
+            <div class="profile-stat-box"><div class="val">${stats.avgScore}</div><div class="lbl">Avg Score</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.bestScore!==Infinity?stats.bestScore:'–'}</div><div class="lbl">Best Round</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.zonesPerRound}</div><div class="lbl">Zones/Rd</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.avgPenalties}</div><div class="lbl">Penalties/Rd</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.birdiesPerRound}</div><div class="lbl">Birdies/Rd</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.bogeysPerRound}</div><div class="lbl">Bogeys/Rd</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.blowupsPerRound}</div><div class="lbl">Blowups/Rd</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.totalAces}</div><div class="lbl">Aces</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.rounds}</div><div class="lbl">Rounds</div></div>
+          </div>
+          <div class="profile-stat-section-label">Par Scoring Averages</div>
+          <div class="profile-stat-grid">
+            <div class="profile-stat-box"><div class="val">${stats.par3Avg}</div><div class="lbl">Par 3 Avg</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.par4Avg}</div><div class="lbl">Par 4 Avg</div></div>
+            <div class="profile-stat-box"><div class="val">${stats.par5Avg}</div><div class="lbl">Par 5 Avg</div></div>
+          </div>
+          <div class="profile-stat-section-label">Hole Performance</div>
+          <div class="profile-stat-grid" style="grid-template-columns:repeat(2,1fr);">
+            <div class="profile-stat-box" style="padding:10px 8px 10px">
+              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#16a34a;margin-bottom:4px">⛳ In The Zone</div>
+              ${stats.bestHole ? `
+                <div style="font-family:'Bebas Neue',cursive;font-size:26px;color:#16a34a;line-height:1">H${stats.bestHole.num}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:2px">Par ${stats.bestHole.par}</div>
+                <div style="font-family:'Bebas Neue',cursive;font-size:17px;color:#16a34a;line-height:1.3">${stats.bestHole.avgVsPar}</div>
+                <div style="font-size:9px;color:var(--muted)">avg ${stats.bestHole.avgNet}</div>
+              ` : `<div style="font-family:'Bebas Neue',cursive;font-size:20px;color:var(--muted)">–</div>`}
+            </div>
+            <div class="profile-stat-box" style="padding:10px 8px 10px">
+              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--flag);margin-bottom:4px">🚩 Penalty Box</div>
+              ${stats.worstHole ? `
+                <div style="font-family:'Bebas Neue',cursive;font-size:26px;color:var(--flag);line-height:1">H${stats.worstHole.num}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:2px">Par ${stats.worstHole.par}</div>
+                <div style="font-family:'Bebas Neue',cursive;font-size:17px;color:var(--flag);line-height:1.3">${stats.worstHole.avgVsPar}</div>
+                <div style="font-size:9px;color:var(--muted)">avg ${stats.worstHole.avgNet}</div>
+              ` : `<div style="font-family:'Bebas Neue',cursive;font-size:20px;color:var(--muted)">–</div>`}
+            </div>
+          </div>
+        ` : `<div style="color:var(--muted);font-size:13px;text-align:center;padding:8px 0">No round data yet.</div>`}
+      </div>
+    `;
+  }).join('');
+  // Populate color pickers and wire up toggle/change handlers after DOM is set
+  profiles.forEach(p => {
+    renderColorPicker(`color-picker-${p.id}`, p.colorIdx, `changeProfileColor_${p.id}`);
+    window[`changeProfileColor_${p.id}`] = (idx) => {
+      updateProfileColor(p.id, idx);
+      renderColorPicker(`color-picker-${p.id}`, idx, `changeProfileColor_${p.id}`);
+      const av = document.getElementById(`avatar-${p.id}`);
+      if (av) av.style.background = PLAYER_COLORS[idx];
+    };
+    window[`toggleColorPicker`] = window[`toggleColorPicker`] || function(id) {
+      const wrap = document.getElementById(`color-picker-wrap-${id}`);
+      if (!wrap) return;
+      const isOpen = wrap.style.display !== 'none';
+      // Close all pickers first
+      document.querySelectorAll('[id^="color-picker-wrap-"]').forEach(el => el.style.display = 'none');
+      if (!isOpen) wrap.style.display = 'block';
+    };
+  });
+  // Expose toggleColorPicker globally (overwrite with latest version each render)
+  window.toggleColorPicker = function(id) {
+    const wrap = document.getElementById(`color-picker-wrap-${id}`);
+    if (!wrap) return;
+    const isOpen = wrap.style.display !== 'none';
+    document.querySelectorAll('[id^="color-picker-wrap-"]').forEach(el => el.style.display = 'none');
+    if (!isOpen) wrap.style.display = 'block';
+  };
+}
+
+// ===== PROFILE STATS (expanded with EDIT 2 stats) =====
+function getProfileStats(profileId) {
+  const rounds = getSavedRounds();
+  let totalNet=0, totalPar=0, bestScore=Infinity, totalZones=0, totalZonePossible=0, totalPenalties=0;
+  let totalBirdies=0, totalBogeys=0, totalBlowups=0, totalAces=0, roundCount=0;
+  // Par averages
+  let par3Strokes=0, par3Count=0, par4Strokes=0, par4Count=0, par5Strokes=0, par5Count=0;
+  // Per-hole stats: [{ net, count, vsPar, ... }]
+  const holeData = HOLES.map(() => ({ totalNet: 0, count: 0, totalZones: 0, totalPenalties: 0 }));
+
+  rounds.forEach(r => {
+    r.players.forEach((rp, pi) => {
+      if (rp.id !== profileId) return;
+      let rNet=0, rPar=0, rZones=0, rPen=0;
+      let rBirdies=0, rBogeys=0, rBlowups=0, rAces=0, hasScore=false;
+      r.scores[pi].forEach((s, hi) => {
+        if (s && s.saved) {
+          const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+          const hNet = Math.max(0, s.strokes - z);
+          const hPar = HOLES[hi].par;
+          const diff = hNet - hPar;
+          rNet += hNet; rPar += hPar; rZones += z; rPen += s.penalties||0;
+          if (diff <= -1) rBirdies++;
+          if (diff === 1) rBogeys++;
+          if (diff >= 2) rBlowups++;
+          if (hNet === 1) rAces++;
+          // Par scoring
+          if (hPar === 3) { par3Strokes += hNet; par3Count++; }
+          if (hPar === 4) { par4Strokes += hNet; par4Count++; }
+          if (hPar === 5) { par5Strokes += hNet; par5Count++; }
+          // Per-hole
+          holeData[hi].totalNet += hNet;
+          holeData[hi].count++;
+          holeData[hi].totalZones += z;
+          holeData[hi].totalPenalties += s.penalties || 0;
+          hasScore = true;
+        }
+      });
+      if (hasScore) {
+        totalNet += rNet; totalPar += rPar;
+        if (rNet < bestScore) bestScore = rNet;
+        totalZones += rZones; totalZonePossible += HOLES.reduce((a,h)=>a+h.zones,0);
+        totalPenalties += rPen;
+        totalBirdies += rBirdies; totalBogeys += rBogeys; totalBlowups += rBlowups;
+        totalAces += rAces; roundCount++;
+      }
+    });
+  });
+
+  const fmt1 = v => roundCount > 0 ? (v / roundCount).toFixed(1) : '–';
+  const avgScore = roundCount > 0 ? (totalNet / roundCount).toFixed(1) : '–';
+  const zonesPerRound = roundCount > 0 ? (totalZones / roundCount).toFixed(1) : '–';
+  const avgPenalties = roundCount > 0 ? (totalPenalties / roundCount).toFixed(1) : '–';
+
+  // Par averages
+  const par3Avg = par3Count > 0 ? (par3Strokes / par3Count).toFixed(2) : '–';
+  const par4Avg = par4Count > 0 ? (par4Strokes / par4Count).toFixed(2) : '–';
+  const par5Avg = par5Count > 0 ? (par5Strokes / par5Count).toFixed(2) : '–';
+
+  // Best/worst hole by avg vs par; in-the-zone and penalty-box
+  let bestHole = null, worstHole = null, inTheZoneHole = null, penaltyBoxHole = null;
+  let bestVal = Infinity, worstVal = -Infinity, bestZoneVal = -Infinity, bestPenVal = -Infinity;
+  holeData.forEach((hd, i) => {
+    if (hd.count < 1) return;
+    const avgNet = hd.totalNet / hd.count;
+    const avgVsPar = avgNet - HOLES[i].par;
+    const avgZones = hd.totalZones / hd.count;
+    const avgPen = hd.totalPenalties / hd.count;
+    const hPar = HOLES[i].par;
+    const hNum = HOLES[i].num;
+    const vsParStr = (avgVsPar >= 0 ? '+' : '') + avgVsPar.toFixed(2);
+    const avgNetStr = avgNet.toFixed(2);
+    if (avgVsPar < bestVal) { bestVal = avgVsPar; bestHole = { num: hNum, par: hPar, avgNet: avgNetStr, avgVsPar: vsParStr }; }
+    if (avgVsPar > worstVal) { worstVal = avgVsPar; worstHole = { num: hNum, par: hPar, avgNet: avgNetStr, avgVsPar: vsParStr }; }
+    if (avgZones > bestZoneVal) { bestZoneVal = avgZones; inTheZoneHole = { num: hNum, par: hPar, avgZones: avgZones.toFixed(2) }; }
+    if (avgPen > bestPenVal) { bestPenVal = avgPen; penaltyBoxHole = { num: hNum, par: hPar, avgPen: avgPen.toFixed(2) }; }
+  });
+
+  return {
+    rounds: roundCount, avgScore, bestScore, zonesPerRound, avgPenalties,
+    birdiesPerRound: fmt1(totalBirdies), bogeysPerRound: fmt1(totalBogeys),
+    blowupsPerRound: fmt1(totalBlowups), totalAces,
+    par3Avg, par4Avg, par5Avg, bestHole, worstHole, inTheZoneHole, penaltyBoxHole,
+  };
+}
+
+function confirmDeleteProfile(id, name) {
+  showModal('🗑️','Delete Player?',`Remove ${name} from saved players? Their historical round data will still be preserved.`,[
+    {label:'Cancel',cls:'cancel',action:'closeModal()'},
+    {label:'Delete',cls:'danger',action:`doDeleteProfile('${id}')`},
+  ]);
+}
+
+function doDeleteProfile(id) { closeModal(); deleteProfile(id); renderProfilesScreen(); }
+
+function getSavedRounds() {
+  try { return JSON.parse(localStorage.getItem('pz_rounds')||'[]'); } catch { return []; }
+}
+
+function showModal(icon,title,msg,actions) {
+  document.getElementById('modal-icon').textContent=icon;
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-msg').textContent=msg;
+  document.getElementById('modal-actions').innerHTML=actions.map(a=>`<button class="modal-btn ${a.cls}" onclick="${a.action}">${a.label}</button>`).join('');
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
