@@ -45,7 +45,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .home-actions { display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px; position:relative;z-index:1; }
 .btn-main { background:var(--sand); color:var(--green-dark); border:none; border-radius:14px; padding:17px; font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; cursor:pointer; box-shadow:0 6px 24px rgba(244,211,94,0.35); transition:transform 0.1s; width:100%; }
 .btn-main:active { transform:scale(0.97); }
-/* EDIT 1: Player profiles button now matches view scorecards (btn-outline style) */
 .btn-outline { background:rgba(255,255,255,0.1); color:white; border:1.5px solid rgba(255,255,255,0.2); border-radius:14px; padding:15px; font-size:15px; font-weight:600; cursor:pointer; width:100%; }
 .btn-outline:active { background:rgba(255,255,255,0.18); }
 .home-course-info { position:relative;z-index:1; margin-top:36px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:14px 20px; text-align:center; width:100%;max-width:300px; }
@@ -79,7 +78,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .add-profile-actions { display:flex; gap:8px; }
 .btn-save-profile { flex:1; background:var(--green-mid); color:white; border:none; border-radius:10px; padding:11px; font-size:14px; font-weight:700; cursor:pointer; }
 .btn-cancel-profile { flex:1; background:#f3f4f6; color:var(--muted); border:none; border-radius:10px; padding:11px; font-size:14px; font-weight:600; cursor:pointer; }
-/* Color picker swatches */
 .color-picker-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
 .color-swatch { width:32px; height:32px; border-radius:50%; border:3px solid transparent; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
 .color-swatch.selected { border-color:white; box-shadow:0 0 0 2px var(--green-bright); transform:scale(1.1); }
@@ -95,12 +93,11 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 #scoring { background:var(--card-bg); }
 .score-header { background:var(--green-dark); padding:calc(var(--safe-top) + 4px) 10px 8px; flex-shrink:0; }
 .hole-nav-row { display:flex; align-items:center; margin-bottom:8px; position:relative; min-height:40px; }
-.hole-center { position:absolute; left:0; right:0; text-align:center; pointer-events:none; }.hole-arrow { background:rgba(255,255,255,0.12); border:none; color:white; width:32px; height:32px; border-radius:10px; font-size:18px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; transition:background 0.1s; }
+.hole-center { position:absolute; left:0; right:0; text-align:center; pointer-events:none; }
+.hole-arrow { background:rgba(255,255,255,0.12); border:none; color:white; width:32px; height:32px; border-radius:10px; font-size:18px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; transition:background 0.1s; }
 .hole-arrow:active { background:rgba(255,255,255,0.22); }
-/* EDIT 5: Exit round button in header */
 .hole-exit-btn { background:rgba(230,57,70,0.2); border:1px solid rgba(230,57,70,0.4); color:rgba(255,255,255,0.7); width:32px; height:32px; border-radius:10px; font-size:13px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; font-weight:700; }
 .hole-exit-btn:active { background:rgba(230,57,70,0.4); }
-.hole-center { flex:1; text-align:center; }
 .hole-badge { display:inline-block; background:var(--sand); color:var(--green-dark); font-family:'Bebas Neue',cursive; font-size:11px; letter-spacing:1px; padding:2px 9px; border-radius:20px; margin-bottom:1px; }
 .hole-name-header { font-family:'Bebas Neue',cursive; color:white; font-size:22px; letter-spacing:1px; line-height:1; }
 .hole-par-badge { color:rgba(255,255,255,0.55); font-size:12px; font-weight:600; margin-top:1px; }
@@ -161,8 +158,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .zone-chip.hit { border-color:var(--green-bright); background:#f0fdf4; color:var(--green-dark); }
 .zone-chip-dot { width:7px;height:7px;border-radius:50%; background:var(--border); transition:background 0.15s; }
 .zone-chip.hit .zone-chip-dot { background:var(--green-bright); }
-
-/* EDIT 4: Score summary bar — removed vs par text */
 .score-summary-bar { background:var(--green-dark); border-radius:14px; padding:14px 16px; display:flex; align-items:stretch; justify-content:space-between; gap:12px; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
 .summary-left { flex:1; display:flex; flex-direction:column; justify-content:center; }
 .summary-left .lbl { color:rgba(255,255,255,0.5); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
@@ -204,6 +199,26 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .round-detail-back-btn { background:rgba(255,255,255,0.12); border:none; color:var(--green-dark); width:30px;height:30px; border-radius:8px; font-size:18px; cursor:pointer; display:flex;align-items:center;justify-content:center; }
 .round-detail-back-lbl { font-size:13px; font-weight:600; color:var(--green-mid); }
 
+/* ===== EDIT ROUND BUTTON (in round detail header row) ===== */
+/* NEW: sits alongside the back button in the detail view header row */
+.edit-round-btn {
+  margin-left:auto;
+  background: rgba(244,211,94,0.15);
+  border: 1.5px solid rgba(244,211,94,0.4);
+  color: var(--sand);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.3px;
+  transition: background 0.15s;
+}
+.edit-round-btn:active { background: rgba(244,211,94,0.28); }
+
 /* Scorecard table shared styles */
 .sc-wrap { border-radius:14px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,0.08); margin-bottom:14px; overflow-x:auto; background:white; }
 .sc-table { border-collapse:collapse; font-size:11px; min-width:100%; }
@@ -219,7 +234,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .sc-table tr.grand-total-row td.sticky-col { background:var(--green-dark); color:var(--sand); }
 .sc-net-under { color:#16a34a; font-weight:700; }
 .sc-net-over { color:var(--flag); font-weight:700; }
-/* EDIT 3: Penalties row style */
 .sc-pen-val { color:var(--muted); font-size:10px; }
 .penalties-card { background:white; border-radius:14px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,0.07); margin-bottom:14px; }
 .penalties-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
@@ -237,7 +251,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .profile-detail-avatar { width:48px;height:48px;border-radius:50%;color:white;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center; font-family:'Bebas Neue',cursive; }
 .profile-detail-name { font-size:18px; font-weight:700; }
 .profile-detail-rounds { font-size:12px; color:var(--muted); }
-/* EDIT 2: 3-col grid for extended stats */
 .profile-stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .profile-stat-box { background:var(--card-bg); border-radius:10px; padding:9px 6px; text-align:center; }
 .profile-stat-box .val { font-family:'Bebas Neue',cursive; font-size:22px; color:var(--green-dark); }
@@ -261,7 +274,104 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
 .summary-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px; }
 .btn-new-round { background:var(--sand); color:var(--green-dark); border:none; border-radius:14px; padding:16px; font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; cursor:pointer; width:100%; margin-top:6px; }
 
-/* EDIT 6: Tie resolution UI */
+/* ===== EDIT ROUND SCREEN ===== */
+#edit-round { background: var(--card-bg); }
+
+/* Edit screen footer — save + delete stacked */
+.edit-screen-footer {
+  padding: 10px 14px calc(var(--safe-bottom) + 10px);
+  background: var(--card-bg);
+  border-top: 1px solid #e0ede8;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.btn-save-changes {
+  background: var(--green-mid); color: white; border: none; border-radius: 14px;
+  padding: 15px; font-family: 'Bebas Neue', cursive; font-size: 21px; letter-spacing: 1px;
+  cursor: pointer; width: 100%; box-shadow: 0 3px 12px rgba(45,106,79,0.3); transition: transform 0.1s;
+}
+.btn-save-changes:active { transform: scale(0.98); }
+.btn-delete-round {
+  background: rgba(230,57,70,0.08); border: 1.5px solid rgba(230,57,70,0.3); color: var(--flag);
+  border-radius: 14px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer;
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;
+}
+.btn-delete-round:active { background: rgba(230,57,70,0.16); }
+
+/* Edit scorecard table wrapper */
+.edit-sc-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px; }
+.edit-info-banner {
+  background: linear-gradient(90deg, rgba(244,211,94,0.18), rgba(244,211,94,0.08));
+  border: 1.5px solid rgba(244,211,94,0.35); border-radius: 12px;
+  padding: 9px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.edit-info-banner-text { font-size: 12px; font-weight: 600; color: var(--green-dark); line-height: 1.4; }
+.edit-info-banner-text span { color: var(--green-mid); }
+
+/* Editable cell highlight in edit scorecard */
+.edit-cell { cursor: pointer; transition: background 0.1s; }
+.edit-cell:active { background: #fef9c3 !important; }
+.edit-cell.active-cell { background: #fef9c3 !important; outline: 2px solid var(--sand); outline-offset: -2px; }
+
+/* Player expand row */
+.edit-player-header { cursor: pointer; }
+.edit-player-header:active td { background: #f0fdf4 !important; }
+.expand-arrow { float: right; margin-right: 6px; font-size: 11px; transition: transform 0.2s; display: inline-block; }
+.expand-arrow.open { transform: rotate(180deg); }
+
+/* Expanded per-player hole list */
+.edit-hole-list-row td { padding: 0; }
+.edit-hole-list { background: #f8fffe; }
+.ehl-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid #f0f0f0; }
+.ehl-hole-num { font-family: 'Bebas Neue', cursive; font-size: 17px; color: var(--green-dark); min-width: 26px; }
+.ehl-hole-name { flex: 1; font-size: 11px; color: var(--muted); line-height: 1.3; }
+.ehl-chips { display: flex; gap: 6px; align-items: center; }
+.ehl-chip { background: white; border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 10px; cursor: pointer; text-align: center; transition: all 0.12s; }
+.ehl-chip:active, .ehl-chip.active-chip { background: #fef9c3; border-color: var(--sand); }
+.ehl-chip-val { font-family: 'Bebas Neue', cursive; font-size: 16px; color: var(--green-dark); line-height: 1; }
+.ehl-chip-lbl { font-size: 8px; color: var(--muted); margin-top: 1px; }
+.ehl-net { text-align: center; min-width: 28px; }
+.ehl-net-val { font-family: 'Bebas Neue', cursive; font-size: 16px; }
+
+/* Bottom sheet */
+.bs-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300;
+  align-items: flex-end; justify-content: center;
+}
+.bs-overlay.show { display: flex; }
+.bs-box {
+  background: white; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
+  padding: 0 0 calc(var(--safe-bottom) + 14px);
+  animation: bsSlideUp 0.22s ease-out;
+}
+@keyframes bsSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.bs-handle { width: 36px; height: 4px; background: #e5e7eb; border-radius: 2px; margin: 10px auto 14px; }
+.bs-header { padding: 0 18px 12px; border-bottom: 1px solid #f0f0f0; }
+.bs-title { font-family: 'Bebas Neue', cursive; font-size: 20px; color: var(--green-dark); letter-spacing: 1px; }
+.bs-subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.bs-body { padding: 16px 18px 4px; }
+.bs-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+.bs-stroke-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.bs-stepper { display: flex; align-items: center; background: #f0fdf4; border: 2px solid var(--border); border-radius: 14px; overflow: hidden; }
+.bs-step-btn { background: none; border: none; width: 52px; height: 52px; font-size: 26px; cursor: pointer; color: var(--green-mid); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.bs-step-btn:active { background: #d1fae5; }
+.bs-step-val { font-family: 'Bebas Neue', cursive; font-size: 36px; color: var(--green-dark); min-width: 52px; text-align: center; line-height: 1; }
+.bs-zones-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.bs-zone-chip { display: flex; align-items: center; gap: 5px; padding: 10px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); transition: all 0.15s; }
+.bs-zone-chip.hit { border-color: var(--green-bright); background: #f0fdf4; color: var(--green-dark); }
+.bs-zone-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+.bs-zone-chip.hit .bs-zone-dot { background: var(--green-bright); }
+.bs-pen-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.bs-pen-stepper { display: flex; align-items: center; background: #f3f4f6; border-radius: 12px; overflow: hidden; }
+.bs-pen-btn { background: none; border: none; width: 44px; height: 44px; font-size: 22px; cursor: pointer; color: var(--green-mid); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.bs-pen-btn:active { background: #e5e7eb; }
+.bs-pen-val { min-width: 44px; text-align: center; font-family: 'Bebas Neue', cursive; font-size: 28px; color: var(--text); }
+.bs-done-btn { background: var(--green-mid); color: white; border: none; border-radius: 14px; padding: 14px; font-family: 'Bebas Neue', cursive; font-size: 19px; letter-spacing: 1px; cursor: pointer; width: 100%; }
+.bs-done-btn:active { opacity: 0.88; }
+
+/* ===== TIE RESOLUTION ===== */
 .tie-players-grid { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
 .tie-player-btn { display:flex; align-items:center; gap:10px; background:#f8f9fa; border:2px solid var(--border); border-radius:12px; padding:10px 14px; cursor:pointer; width:100%; text-align:left; transition:all 0.15s; }
 .tie-player-btn:active { background:#f0fdf4; border-color:var(--green-bright); }
@@ -299,7 +409,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
   </div>
   <div class="home-actions">
     <button class="btn-main" onclick="showScreen('setup');initSetup()">NEW ROUND</button>
-    <!-- EDIT 1: Matches btn-outline style exactly -->
     <button class="btn-outline" onclick="showScreen('scorecard');renderScorecardList()">VIEW SCORECARDS</button>
     <button class="btn-outline" onclick="showScreen('profiles');renderProfilesScreen()">PLAYER PROFILES</button>
   </div>
@@ -348,7 +457,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
         <div class="hole-name-header" id="hole-name-header">Music City Mile</div>
         <div class="hole-par-badge" id="hole-par-badge">Par 5</div>
       </div>
-      <!-- Exit button sits at far right, unobtrusive -->
       <button class="hole-exit-btn" style="margin-left:auto" onclick="confirmExitRound()" title="Exit Round">✕</button>
     </div>
     <div class="hole-strip-wrap" id="hole-strip-wrap">
@@ -395,6 +503,35 @@ body { font-family: 'DM Sans', sans-serif; background: var(--green-dark); color:
   <div class="summary-body" id="summary-body"></div>
 </div>
 
+<!--
+  EDIT ROUND SCREEN (v2.7)
+  Scorecard table view — tap player name row to expand all holes,
+  tap any chip (strokes/zones/penalties) to open a bottom sheet editor.
+-->
+<div id="edit-round" class="screen">
+  <div class="nav-header">
+    <button class="nav-back" onclick="confirmExitEdit()">‹</button>
+    <div class="nav-title" id="edit-nav-title">EDIT ROUND</div>
+  </div>
+  <div class="edit-sc-body" id="edit-sc-body"></div>
+  <div class="edit-screen-footer">
+    <button class="btn-save-changes" onclick="saveEditedRound()">SAVE CHANGES ✓</button>
+    <button class="btn-delete-round" onclick="confirmDeleteRound()">🗑 Delete This Round</button>
+  </div>
+</div>
+
+<!-- BOTTOM SHEET for cell editing -->
+<div class="bs-overlay" id="bs-overlay" onclick="closeBsOverlay(event)">
+  <div class="bs-box" id="bs-box">
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="bs-title" id="bs-title"></div>
+      <div class="bs-subtitle" id="bs-subtitle"></div>
+    </div>
+    <div class="bs-body" id="bs-body"></div>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-box">
@@ -428,21 +565,11 @@ const HOLES = [
 ];
 
 const PLAYER_COLORS = [
-  '#40916c', // teal green
-  '#e63946', // red
-  '#f4a261', // orange
-  '#4361ee', // blue
-  '#7209b7', // purple
-  '#f4d35e', // gold/sand
-  '#e76f51', // coral
-  '#2ec4b6', // cyan
-  '#3a86ff', // sky blue
-  '#ff006e', // hot pink
-  '#8338ec', // violet
-  '#fb5607', // bright orange
+  '#40916c','#e63946','#f4a261','#4361ee','#7209b7',
+  '#f4d35e','#e76f51','#2ec4b6','#3a86ff','#ff006e',
+  '#8338ec','#fb5607',
 ];
 
-// Smart initials
 function getInitials(name) {
   const words = name.trim().split(/\s+/).filter(Boolean);
   if (words.length === 1) return words[0][0].toUpperCase();
@@ -473,6 +600,23 @@ function deleteProfile(id) { saveProfiles(getProfiles().filter(p => p.id !== id)
 let state = {
   selectedProfileIds: [], startHole: 0, currentHole: 0, currentPlayer: 0,
   scores: [], activePlayers: [], roundStarted: false,
+};
+
+/*
+ * NEW: editState — mirrors the structure of state but holds a copy of
+ * an existing round being edited. Kept separate so live scoring is never affected.
+ *   editState.roundIdx      — index in pz_rounds array
+ *   editState.currentHole   — which hole is shown (0-based)
+ *   editState.currentPlayer — which player tab is active
+ *   editState.scores        — deep copy of round.scores, mutated during editing
+ *   editState.activePlayers — copy of round.players
+ */
+let editState = {
+  roundIdx: -1,
+  currentHole: 0,
+  currentPlayer: 0,
+  scores: [],
+  activePlayers: [],
 };
 
 function emptyScore(hole) {
@@ -586,14 +730,13 @@ function startRound() {
   renderScoringScreen();
 }
 
-// ===== EDIT 5: Exit round =====
+// ===== EXIT LIVE ROUND =====
 function confirmExitRound() {
   showModal('✕', 'Exit Round?', 'Your progress will be lost. Are you sure you want to exit this round?', [
     { label: 'Stay', cls: 'primary', action: 'closeModal()' },
     { label: 'Exit Round', cls: 'danger', action: 'exitRound()' },
   ]);
 }
-
 function exitRound() {
   closeModal();
   state.roundStarted = false;
@@ -654,10 +797,12 @@ function renderPlayerSwitcher() {
   }).join('');
 }
 
-function calcRunningNet(playerIdx) {
+function calcRunningNet(playerIdx, scoresRef, playersRef) {
+  const sc = scoresRef || state.scores;
+  const pl = playersRef || state.activePlayers;
   let net = 0, par = 0, hasAny = false;
   for (let h = 0; h < HOLES.length; h++) {
-    const s = state.scores[playerIdx][h];
+    const s = sc[playerIdx][h];
     if (s && s.saved) {
       net += Math.max(0, s.strokes - s.zonesHit.filter(Boolean).length);
       par += HOLES[h].par; hasAny = true;
@@ -675,7 +820,6 @@ function renderScoreBody() {
     renderHoleStats(hole) + renderManualInputs(hole, score) + renderScoreSummaryBar(hole, score);
 }
 
-// EDIT 4: zones per round instead of zone%
 function renderHoleStats(hole) {
   const rounds = getSavedRounds();
   const playerId = state.activePlayers[state.currentPlayer].id;
@@ -695,7 +839,6 @@ function renderHoleStats(hole) {
   if (!netScores.length) return '';
   const avg = (netScores.reduce((a,b)=>a+b,0)/netScores.length).toFixed(1);
   const best = Math.min(...netScores);
-  // EDIT 4: zones per round
   const zonesPerRound = rounds_count > 0 ? (totalZones / rounds_count).toFixed(1) : '0.0';
   const penPct = rounds_count > 0 ? (penalties/rounds_count).toFixed(1) : '0.0';
   const bestVsPar = best - hole.par;
@@ -755,7 +898,6 @@ function renderManualInputs(hole, score) {
   `;
 }
 
-// EDIT 4: Removed vs par label, kept player name
 function renderScoreSummaryBar(hole, score) {
   const zonesCount = score.zonesHit.filter(Boolean).length;
   const holeNet = Math.max(0, score.strokes - zonesCount);
@@ -764,7 +906,7 @@ function renderScoreSummaryBar(hole, score) {
   const holeLabel = holeVsPar < 0 ? (holeVsPar===-1?'BIRDIE':holeVsPar===-2?'EAGLE':'EAGLE+') :
     holeVsPar > 0 ? (holeVsPar===1?'BOGEY':holeVsPar===2?'DOUBLE':holeVsPar===3?'TRIPLE':'OVER') : 'PAR';
   const holeClass = holeVsPar < 0 ? 'under' : holeVsPar > 0 ? 'over' : 'even';
-  const runNet = calcRunningNet(state.currentPlayer);
+  const runNet = calcRunningNet(state.currentPlayer, state.scores, state.activePlayers);
   const runStr = runNet === null ? '–' : runNet === 0 ? 'E' : runNet > 0 ? `+${runNet}` : `${runNet}`;
   const runClass = runNet === null ? 'even' : runNet < 0 ? 'under' : runNet > 0 ? 'over' : 'even';
   const firstName = state.activePlayers[state.currentPlayer].name.split(' ')[0];
@@ -799,6 +941,7 @@ function renderScoreSummaryBar(hole, score) {
   `;
 }
 
+// ===== LIVE SCORING ADJUSTERS (write to state) =====
 function adjustStrokes(delta) {
   const score = state.scores[state.currentPlayer][state.currentHole];
   score.strokes = Math.max(1, Math.min(20, score.strokes + delta));
@@ -841,11 +984,9 @@ function adjustPenalties(delta) {
 function prevHole() {
   if (state.currentHole > 0) { state.currentHole--; renderScoringScreen(); }
 }
-
 function nextHoleArrow() {
   if (state.currentHole < HOLES.length - 1) { state.currentHole++; renderScoringScreen(); }
 }
-
 function jumpToHole(idx) { state.currentHole = idx; renderScoringScreen(); }
 
 function saveAndAdvance() {
@@ -878,8 +1019,390 @@ function finishRound() {
   renderSummary(round);
 }
 
+// ===== EDIT ROUND: OPEN =====
+function openEditRound(roundIdx) {
+  const rounds = getSavedRounds();
+  const round = rounds[roundIdx];
+  if (!round) return;
+  editState.roundIdx = roundIdx;
+  editState.currentHole = 0;
+  editState.currentPlayer = 0;
+  editState.scores = JSON.parse(JSON.stringify(round.scores));
+  editState.activePlayers = round.players;
+  editState.expandedPlayer = null; // track which player row is expanded
+  document.getElementById('edit-nav-title').textContent = round.date;
+  showScreen('edit-round');
+  renderEditScorecardTable();
+}
+
+// ===== EDIT ROUND: RENDER SCORECARD TABLE =====
+function renderEditScorecardTable() {
+  const front = HOLES.slice(0, 9);
+  const back = HOLES.slice(9, 18);
+
+  function sectionTotals(pi, holeList) {
+    let strokes=0, zones=0, net=0, par=0, penalties=0;
+    holeList.forEach(h => {
+      const s = editState.scores[pi][h.num - 1];
+      if (s) {
+        const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+        strokes += s.strokes; zones += z;
+        net += Math.max(0, s.strokes - z); par += h.par; penalties += s.penalties||0;
+      }
+    });
+    return {strokes, zones, net, par, penalties};
+  }
+
+  let tableHtml = `
+    <div class="edit-info-banner">
+      <div class="edit-info-banner-text">
+        ✏️ Tap a <span>player name</span> to expand their holes, then tap any value to edit it
+      </div>
+    </div>
+    <div class="sc-wrap" style="margin-bottom:14px">
+      <table class="sc-table" id="edit-sc-table">
+        <thead>
+          <tr>
+            <th class="sticky-col">PLAYER</th>
+            ${front.map(h=>`<th>${h.num}</th>`).join('')}
+            <th style="background:#2a5240;color:var(--sand)">OUT</th>
+            ${back.map(h=>`<th>${h.num}</th>`).join('')}
+            <th style="background:#2a5240;color:var(--sand)">IN</th>
+            <th style="background:#1a3a2a;color:var(--sand)">TOT</th>
+          </tr>
+          <tr>
+            <td class="sticky-col" style="background:#f8f9fa;color:var(--muted);font-size:9px;font-weight:700;text-transform:uppercase;">PAR</td>
+            ${front.map(h=>`<td style="background:#f8f9fa;color:var(--muted)">${h.par}</td>`).join('')}
+            <td style="background:#f0f7f4;font-weight:700;color:var(--green-dark)">${front.reduce((a,h)=>a+h.par,0)}</td>
+            ${back.map(h=>`<td style="background:#f8f9fa;color:var(--muted)">${h.par}</td>`).join('')}
+            <td style="background:#f0f7f4;font-weight:700;color:var(--green-dark)">${back.reduce((a,h)=>a+h.par,0)}</td>
+            <td style="background:#f0fdf4;font-weight:700;color:var(--green-dark)">${HOLES.reduce((a,h)=>a+h.par,0)}</td>
+          </tr>
+        </thead>
+        <tbody id="edit-sc-tbody"></tbody>
+      </table>
+    </div>
+  `;
+  document.getElementById('edit-sc-body').innerHTML = tableHtml;
+  renderEditTbody();
+}
+
+function renderEditTbody() {
+  const front = HOLES.slice(0, 9);
+  const back = HOLES.slice(9, 18);
+  const tbody = document.getElementById('edit-sc-tbody');
+  if (!tbody) return;
+
+  function sectionTotals(pi, holeList) {
+    let strokes=0, zones=0, net=0, par=0, penalties=0;
+    holeList.forEach(h => {
+      const s = editState.scores[pi][h.num - 1];
+      if (s) {
+        const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+        strokes += s.strokes; zones += z;
+        net += Math.max(0, s.strokes - z); par += h.par; penalties += s.penalties||0;
+      }
+    });
+    return {strokes, zones, net, par, penalties};
+  }
+
+  let html = '';
+  editState.activePlayers.forEach((p, pi) => {
+    const color = PLAYER_COLORS[p.colorIdx];
+    const fTot = sectionTotals(pi, front);
+    const bTot = sectionTotals(pi, back);
+    const total = { net: fTot.net+bTot.net, par: fTot.par+bTot.par };
+    const tv = total.net - total.par;
+    const tvStr = tv===0?'E':tv>0?`+${tv}`:`${tv}`;
+    const isExpanded = editState.expandedPlayer === pi;
+
+    // Player header row — tap to expand
+    html += `
+      <tr class="edit-player-header" onclick="toggleEditExpand(${pi})">
+        <td class="sticky-col" colspan="${front.length + back.length + 3}"
+          style="background:#f8f9fa;border-top:2px solid #e5e7eb;font-family:'Bebas Neue',cursive;font-size:10px;letter-spacing:1px;color:var(--muted);padding:6px 10px;cursor:pointer;">
+          <span style="display:inline-flex;align-items:center;gap:6px;width:100%">
+            <span style="width:12px;height:12px;border-radius:50%;background:${color};display:inline-block;flex-shrink:0"></span>
+            ${escHtml(p.name).toUpperCase()}
+            <span class="expand-arrow ${isExpanded?'open':''}">▾</span>
+          </span>
+        </td>
+      </tr>
+    `;
+
+    // Summary rows (read-only totals, always visible)
+    html += `
+      <tr>
+        <td class="sticky-col">Strokes</td>
+        ${front.map((h,hi) => { const s=editState.scores[pi][h.num-1]; return `<td>${s?s.strokes:'–'}</td>`; }).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${fTot.strokes||'–'}</td>
+        ${back.map((h,hi) => { const s=editState.scores[pi][h.num-1]; return `<td>${s?s.strokes:'–'}</td>`; }).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${bTot.strokes||'–'}</td>
+        <td style="background:#f0fdf4;font-weight:700">${fTot.strokes+bTot.strokes||'–'}</td>
+      </tr>
+      <tr>
+        <td class="sticky-col">Zones</td>
+        ${front.map(h => { const s=editState.scores[pi][h.num-1]; const z=s&&s.zonesHit?s.zonesHit.filter(Boolean).length:0; return `<td>${s?z:'–'}</td>`; }).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${fTot.zones}</td>
+        ${back.map(h => { const s=editState.scores[pi][h.num-1]; const z=s&&s.zonesHit?s.zonesHit.filter(Boolean).length:0; return `<td>${s?z:'–'}</td>`; }).join('')}
+        <td style="background:#f0f7f4;font-weight:700">${bTot.zones}</td>
+        <td style="background:#f0fdf4;font-weight:700">${fTot.zones+bTot.zones}</td>
+      </tr>
+      <tr class="subtotal-row">
+        <td class="sticky-col">Net</td>
+        ${front.map(h => { const s=editState.scores[pi][h.num-1]; if(!s)return`<td>–</td>`; const z=s.zonesHit?s.zonesHit.filter(Boolean).length:0; const n=Math.max(0,s.strokes-z); const d=n-h.par; return `<td class="${d<0?'sc-net-under':d>0?'sc-net-over':''}">${n}</td>`; }).join('')}
+        <td style="background:#e8f7ef;font-weight:700">${fTot.net||'–'}</td>
+        ${back.map(h => { const s=editState.scores[pi][h.num-1]; if(!s)return`<td>–</td>`; const z=s.zonesHit?s.zonesHit.filter(Boolean).length:0; const n=Math.max(0,s.strokes-z); const d=n-h.par; return `<td class="${d<0?'sc-net-under':d>0?'sc-net-over':''}">${n}</td>`; }).join('')}
+        <td style="background:#e8f7ef;font-weight:700">${bTot.net||'–'}</td>
+        <td class="${tv<0?'sc-net-under':tv>0?'sc-net-over':''}" style="font-weight:800;font-size:13px">${total.net} (${tvStr})</td>
+      </tr>
+    `;
+
+    // Expanded per-hole edit list
+    if (isExpanded) {
+      html += `<tr class="edit-hole-list-row"><td colspan="${front.length + back.length + 3}" style="padding:0">
+        <div class="edit-hole-list">
+          ${HOLES.map((h, hi) => {
+            const s = editState.scores[pi][hi];
+            if (!s) return '';
+            const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+            const n = Math.max(0, s.strokes - z);
+            const d = n - h.par;
+            const dStr = d===0?'E':d>0?`+${d}`:`${d}`;
+            const dColor = d<0?'#16a34a':d>0?'var(--flag)':'var(--muted)';
+            return `
+              <div class="ehl-row">
+                <div class="ehl-hole-num">${h.num}</div>
+                <div class="ehl-hole-name">${escHtml(h.name)}<br>Par ${h.par}</div>
+                <div class="ehl-chips">
+                  <div class="ehl-chip" id="ehl-s-${pi}-${hi}" onclick="openBs(${pi},${hi},'strokes')">
+                    <div class="ehl-chip-val">${s.strokes}</div>
+                    <div class="ehl-chip-lbl">Strokes</div>
+                  </div>
+                  <div class="ehl-chip" id="ehl-z-${pi}-${hi}" onclick="openBs(${pi},${hi},'zones')">
+                    <div class="ehl-chip-val">${z}/${h.zones}</div>
+                    <div class="ehl-chip-lbl">Zones</div>
+                  </div>
+                  <div class="ehl-chip" id="ehl-p-${pi}-${hi}" onclick="openBs(${pi},${hi},'penalties')">
+                    <div class="ehl-chip-val">${s.penalties||0}</div>
+                    <div class="ehl-chip-lbl">Pen</div>
+                  </div>
+                  <div class="ehl-net">
+                    <div class="ehl-net-val" style="color:${dColor}">${dStr}</div>
+                    <div class="ehl-chip-lbl">Net</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </td></tr>`;
+    }
+  });
+  tbody.innerHTML = html;
+}
+
+function toggleEditExpand(pi) {
+  closeBs();
+  editState.expandedPlayer = editState.expandedPlayer === pi ? null : pi;
+  renderEditTbody();
+  // Scroll expanded player into view
+  setTimeout(() => {
+    const tbody = document.getElementById('edit-sc-tbody');
+    if (tbody) {
+      const rows = tbody.querySelectorAll('.edit-player-header');
+      if (rows[pi]) rows[pi].scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }, 60);
+}
+
+// ===== BOTTOM SHEET =====
+let bsTarget = null; // { pi, hi, field }
+
+function openBs(pi, hi, field) {
+  bsTarget = { pi, hi, field };
+  const h = HOLES[hi];
+  const s = editState.scores[pi][hi];
+  const p = editState.activePlayers[pi];
+  const fieldLabel = field==='strokes'?'Strokes Taken':field==='zones'?'Zones Hit':'Penalties';
+
+  document.getElementById('bs-title').textContent = `${p.name} · Hole ${h.num}`;
+  document.getElementById('bs-subtitle').textContent = `${h.name} · Par ${h.par} · ${fieldLabel}`;
+
+  let bodyHtml = '';
+  if (field === 'strokes') {
+    bodyHtml = `
+      <div class="bs-field-label">Strokes Taken</div>
+      <div class="bs-stroke-row">
+        <div class="bs-stepper">
+          <button class="bs-step-btn" onclick="bsAdjust(-1)">−</button>
+          <div class="bs-step-val" id="bs-val">${s.strokes}</div>
+          <button class="bs-step-btn" onclick="bsAdjust(1)">+</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">Par ${h.par}</div>
+      </div>
+      <button class="bs-done-btn" onclick="closeBs()">Done ✓</button>
+    `;
+  } else if (field === 'zones') {
+    const chips = s.zonesHit.map((hit, i) => `
+      <div class="bs-zone-chip ${hit?'hit':''}" id="bs-zchip-${i}" onclick="bsToggleZone(${i})">
+        <div class="bs-zone-dot"></div>Zone ${i+1}
+      </div>
+    `).join('');
+    bodyHtml = `
+      <div class="bs-field-label">Zones Hit (${h.zones} available on this hole)</div>
+      <div class="bs-zones-grid">${chips}</div>
+      <button class="bs-done-btn" onclick="closeBs()">Done ✓</button>
+    `;
+  } else {
+    bodyHtml = `
+      <div class="bs-field-label">Rough Penalties (tracking only)</div>
+      <div class="bs-pen-row">
+        <div class="bs-pen-stepper">
+          <button class="bs-pen-btn" onclick="bsAdjust(-1)">−</button>
+          <div class="bs-pen-val" id="bs-val">${s.penalties||0}</div>
+          <button class="bs-pen-btn" onclick="bsAdjust(1)">+</button>
+        </div>
+      </div>
+      <button class="bs-done-btn" onclick="closeBs()">Done ✓</button>
+    `;
+  }
+  document.getElementById('bs-body').innerHTML = bodyHtml;
+  // Highlight active chip
+  document.querySelectorAll('.ehl-chip').forEach(c => c.classList.remove('active-chip'));
+  const chipId = `ehl-${field[0]}-${pi}-${hi}`;
+  const chip = document.getElementById(chipId);
+  if (chip) chip.classList.add('active-chip');
+
+  document.getElementById('bs-overlay').classList.add('show');
+}
+
+function bsAdjust(delta) {
+  if (!bsTarget) return;
+  const { pi, hi, field } = bsTarget;
+  const s = editState.scores[pi][hi];
+  if (field === 'strokes') {
+    s.strokes = Math.max(1, Math.min(20, s.strokes + delta));
+    const el = document.getElementById('bs-val');
+    if (el) el.textContent = s.strokes;
+    // Update chip in the list
+    const chip = document.getElementById(`ehl-s-${pi}-${hi}`);
+    if (chip) chip.querySelector('.ehl-chip-val').textContent = s.strokes;
+  } else if (field === 'penalties') {
+    s.penalties = Math.max(0, (s.penalties||0) + delta);
+    const el = document.getElementById('bs-val');
+    if (el) el.textContent = s.penalties;
+    const chip = document.getElementById(`ehl-p-${pi}-${hi}`);
+    if (chip) chip.querySelector('.ehl-chip-val').textContent = s.penalties;
+  }
+  refreshNetForHole(pi, hi);
+}
+
+function bsToggleZone(idx) {
+  if (!bsTarget) return;
+  const { pi, hi } = bsTarget;
+  const s = editState.scores[pi][hi];
+  s.zonesHit[idx] = !s.zonesHit[idx];
+  const chip = document.getElementById(`bs-zchip-${idx}`);
+  if (chip) chip.classList.toggle('hit');
+  // Update zone chip in hole list
+  const zChip = document.getElementById(`ehl-z-${pi}-${hi}`);
+  if (zChip) zChip.querySelector('.ehl-chip-val').textContent = `${s.zonesHit.filter(Boolean).length}/${HOLES[hi].zones}`;
+  refreshNetForHole(pi, hi);
+}
+
+function refreshNetForHole(pi, hi) {
+  // Updates the net display in the expanded list for this hole without full re-render
+  const s = editState.scores[pi][hi];
+  const h = HOLES[hi];
+  const z = s.zonesHit ? s.zonesHit.filter(Boolean).length : 0;
+  const n = Math.max(0, s.strokes - z);
+  const d = n - h.par;
+  const dStr = d===0?'E':d>0?`+${d}`:`${d}`;
+  const dColor = d<0?'#16a34a':d>0?'var(--flag)':'var(--muted)';
+  // Find the net display in the ehl-row for this hole
+  const rows = document.querySelectorAll('.ehl-row');
+  if (rows[hi]) {
+    const netEl = rows[hi].querySelector('.ehl-net-val');
+    if (netEl) { netEl.textContent = dStr; netEl.style.color = dColor; }
+  }
+}
+
+function closeBs() {
+  document.getElementById('bs-overlay').classList.remove('show');
+  document.querySelectorAll('.ehl-chip').forEach(c => c.classList.remove('active-chip'));
+  // Re-render the summary rows (strokes/zones/net totals) after any change
+  renderEditTbody();
+  bsTarget = null;
+}
+
+function closeBsOverlay(e) {
+  if (e.target === document.getElementById('bs-overlay')) closeBs();
+}
+
+// ===== EDIT ROUND: SAVE =====
+/*
+ * NEW: saveEditedRound()
+ * Writes editState.scores back into the correct round in localStorage,
+ * then returns to the round detail view showing the updated scorecard.
+ */
+function saveEditedRound() {
+  const rounds = getSavedRounds();
+  if (editState.roundIdx < 0 || editState.roundIdx >= rounds.length) return;
+  rounds[editState.roundIdx].scores = editState.scores;
+  localStorage.setItem('pz_rounds', JSON.stringify(rounds));
+  // Return to detail view for that round
+  showScreen('scorecard');
+  renderScorecardList();
+  openRoundDetail(editState.roundIdx);
+}
+
+// ===== EDIT ROUND: CANCEL =====
+function confirmExitEdit() {
+  closeBs();
+  showModal('✕', 'Discard Changes?', 'Any edits you made will not be saved.', [
+    { label: 'Keep Editing', cls: 'primary', action: 'closeModal()' },
+    { label: 'Discard', cls: 'danger', action: 'discardEdit()' },
+  ]);
+}
+function discardEdit() {
+  closeModal();
+  showScreen('scorecard');
+  renderScorecardList();
+  openRoundDetail(editState.roundIdx);
+}
+
+// ===== EDIT ROUND: DELETE =====
+/*
+ * NEW: confirmDeleteRound() / doDeleteRound()
+ * Shows a strong confirmation modal before permanently removing a round.
+ * On confirm, removes it from localStorage and returns to the scorecards list.
+ */
+function confirmDeleteRound() {
+  const rounds = getSavedRounds();
+  const round = rounds[editState.roundIdx];
+  if (!round) return;
+  showModal(
+    '🗑️',
+    'Delete Round?',
+    `This will permanently delete the round from ${round.date}. This cannot be undone.`,
+    [
+      { label: 'Cancel', cls: 'cancel', action: 'closeModal()' },
+      { label: 'Delete Round', cls: 'danger', action: 'doDeleteRound()' },
+    ]
+  );
+}
+function doDeleteRound() {
+  closeModal();
+  const rounds = getSavedRounds();
+  rounds.splice(editState.roundIdx, 1);
+  localStorage.setItem('pz_rounds', JSON.stringify(rounds));
+  editState.roundIdx = -1;
+  showScreen('scorecard');
+  renderScorecardList();
+}
+
 // ===== SHARED SCORECARD TABLE BUILDER =====
-// EDIT 3: Added Penalties row to scorecard table
 function buildScorecardHTML(round) {
   const front = HOLES.slice(0, 9);
   const back = HOLES.slice(9, 18);
@@ -992,7 +1515,7 @@ function buildScorecardHTML(round) {
   return `<div class="sc-wrap">${html}</div>`;
 }
 
-// ===== EDIT 6: Tie handling =====
+// ===== TIE HANDLING =====
 function calcRoundTotals(round) {
   return round.players.map((p, pi) => {
     let net=0, par=0, zones=0, penalties=0, strokes=0;
@@ -1013,7 +1536,6 @@ function renderSummaryWinnerBar(round, overrideWinner) {
   const isTied = tied.length > 1 && !overrideWinner;
 
   if (overrideWinner === 'tie') {
-    // Declared tie
     document.getElementById('summary-winner-bar').innerHTML = `
       <div class="sw-trophy">🤝</div>
       <div class="sw-info">
@@ -1028,7 +1550,6 @@ function renderSummaryWinnerBar(round, overrideWinner) {
   const winner = overrideWinner ? totals.find(t=>t.id===overrideWinner) || totals[0] : totals[0];
 
   if (isTied) {
-    // Show tie resolution UI
     const tiedPlayersHtml = tied.map(t => {
       const color = PLAYER_COLORS[t.colorIdx];
       return `
@@ -1065,7 +1586,6 @@ function renderSummaryWinnerBar(round, overrideWinner) {
   `;
 }
 
-// Track current summary round
 let currentSummaryRound = null;
 let currentSummaryOverride = null;
 
@@ -1074,7 +1594,7 @@ function resolveTie(roundId, winnerId) {
   renderSummaryWinnerBar(currentSummaryRound, winnerId);
 }
 
-// ===== SUMMARY (post-round) =====
+// ===== SUMMARY =====
 function renderSummary(round) {
   currentSummaryRound = round;
   currentSummaryOverride = null;
@@ -1086,7 +1606,7 @@ function renderSummary(round) {
   `;
 }
 
-// ===== SCORECARDS LIST (history) =====
+// ===== SCORECARDS LIST =====
 function renderScorecardList() {
   document.getElementById('scorecard-nav-title').textContent = 'SCORECARDS';
   const rounds = getSavedRounds();
@@ -1133,6 +1653,11 @@ function renderScorecardList() {
   body.innerHTML = html;
 }
 
+/*
+ * MODIFIED: openRoundDetail()
+ * Added an Edit Round button (edit-round-btn) in the header row next to
+ * the "All Rounds" back button. Clicking it calls openEditRound(roundIdx).
+ */
 function openRoundDetail(roundIdx) {
   const rounds = getSavedRounds();
   const round = rounds[roundIdx];
@@ -1140,7 +1665,6 @@ function openRoundDetail(roundIdx) {
   document.getElementById('scorecard-nav-title').textContent = round.date;
   const body = document.getElementById('scorecard-body');
 
-  // EDIT 6: Detect ties in history
   const totals = calcRoundTotals(round);
   const topScore = totals[0].vsPar;
   const tied = totals.filter(t => t.vsPar === topScore);
@@ -1177,10 +1701,14 @@ function openRoundDetail(roundIdx) {
     `;
   }
 
+  // NEW: header row now has Edit Round button alongside back button
   body.innerHTML = `
-    <div class="round-detail-back" onclick="renderScorecardList()">
-      <button class="round-detail-back-btn">‹</button>
-      <span class="round-detail-back-lbl">All Rounds</span>
+    <div style="display:flex;align-items:center;gap:8px;padding:0 0 12px;">
+      <div class="round-detail-back" style="padding:0;flex:1" onclick="renderScorecardList()">
+        <button class="round-detail-back-btn">‹</button>
+        <span class="round-detail-back-lbl">All Rounds</span>
+      </div>
+      <button class="edit-round-btn" onclick="openEditRound(${roundIdx})">✏️ Edit Round</button>
     </div>
     ${winnerHtml}
     ${buildScorecardHTML(round)}
@@ -1211,7 +1739,7 @@ function renderProfilesScreen() {
             <div class="profile-detail-rounds">${stats.rounds} round${stats.rounds!==1?'s':''} played</div>
             <div style="font-size:10px;color:var(--green-bright);margin-top:2px">Tap icon to change color</div>
           </div>
-          <button onclick="confirmDeleteProfile('${p.id}','${escHtml(p.name)}')" style="margin-left:auto;background:none;border:none;color:#d1d5db;font-size:22px;cursor:pointer;padding:4px;">×</button>
+          <button onclick="confirmDeleteProfile('${p.id}','${escHtml(p.name)}')" style="margin-left:auto;display:flex;align-items:center;gap:4px;background:rgba(230,57,70,0.07);border:1.5px solid rgba(230,57,70,0.2);color:var(--flag);border-radius:10px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;">🗑 Delete</button>
         </div>
         <div id="color-picker-wrap-${p.id}" style="display:none;padding:8px 0 4px;">
           <div class="color-picker-label">Pick a color</div>
@@ -1240,7 +1768,7 @@ function renderProfilesScreen() {
             <div class="profile-stat-box" style="padding:10px 8px 10px">
               <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#16a34a;margin-bottom:4px">⛳ In The Zone</div>
               ${stats.bestHole ? `
-                <div style="font-family:'Bebas Neue',cursive;font-size:26px;color:#16a34a;line-height:1">Hole ${stats.bestHole.num}</div>
+                <div style="font-family:'Bebas Neue',cursive;font-size:22px;color:#16a34a;line-height:1">Hole ${stats.bestHole.num}</div>
                 <div style="font-size:10px;color:var(--muted);margin-top:2px">Par ${stats.bestHole.par}</div>
                 <div style="font-family:'Bebas Neue',cursive;font-size:17px;color:#16a34a;line-height:1.3">${stats.bestHole.avgVsPar}</div>
                 <div style="font-size:9px;color:var(--muted)">avg ${stats.bestHole.avgNet}</div>
@@ -1249,7 +1777,7 @@ function renderProfilesScreen() {
             <div class="profile-stat-box" style="padding:10px 8px 10px">
               <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--flag);margin-bottom:4px">🚩 Penalty Box</div>
               ${stats.worstHole ? `
-                <div style="font-family:'Bebas Neue',cursive;font-size:26px;color:var(--flag);line-height:1">Hole ${stats.worstHole.num}</div>
+                <div style="font-family:'Bebas Neue',cursive;font-size:22px;color:var(--flag);line-height:1">Hole ${stats.worstHole.num}</div>
                 <div style="font-size:10px;color:var(--muted);margin-top:2px">Par ${stats.worstHole.par}</div>
                 <div style="font-family:'Bebas Neue',cursive;font-size:17px;color:var(--flag);line-height:1.3">${stats.worstHole.avgVsPar}</div>
                 <div style="font-size:9px;color:var(--muted)">avg ${stats.worstHole.avgNet}</div>
@@ -1260,7 +1788,6 @@ function renderProfilesScreen() {
       </div>
     `;
   }).join('');
-  // Populate color pickers and wire up toggle/change handlers after DOM is set
   profiles.forEach(p => {
     renderColorPicker(`color-picker-${p.id}`, p.colorIdx, `changeProfileColor_${p.id}`);
     window[`changeProfileColor_${p.id}`] = (idx) => {
@@ -1269,16 +1796,7 @@ function renderProfilesScreen() {
       const av = document.getElementById(`avatar-${p.id}`);
       if (av) av.style.background = PLAYER_COLORS[idx];
     };
-    window[`toggleColorPicker`] = window[`toggleColorPicker`] || function(id) {
-      const wrap = document.getElementById(`color-picker-wrap-${id}`);
-      if (!wrap) return;
-      const isOpen = wrap.style.display !== 'none';
-      // Close all pickers first
-      document.querySelectorAll('[id^="color-picker-wrap-"]').forEach(el => el.style.display = 'none');
-      if (!isOpen) wrap.style.display = 'block';
-    };
   });
-  // Expose toggleColorPicker globally (overwrite with latest version each render)
   window.toggleColorPicker = function(id) {
     const wrap = document.getElementById(`color-picker-wrap-${id}`);
     if (!wrap) return;
@@ -1288,14 +1806,12 @@ function renderProfilesScreen() {
   };
 }
 
-// ===== PROFILE STATS (expanded with EDIT 2 stats) =====
+// ===== PROFILE STATS =====
 function getProfileStats(profileId) {
   const rounds = getSavedRounds();
   let totalNet=0, totalPar=0, bestScore=Infinity, totalZones=0, totalZonePossible=0, totalPenalties=0;
   let totalBirdies=0, totalBogeys=0, totalBlowups=0, totalAces=0, roundCount=0;
-  // Par averages
   let par3Strokes=0, par3Count=0, par4Strokes=0, par4Count=0, par5Strokes=0, par5Count=0;
-  // Per-hole stats: [{ net, count, vsPar, ... }]
   const holeData = HOLES.map(() => ({ totalNet: 0, count: 0, totalZones: 0, totalPenalties: 0 }));
 
   rounds.forEach(r => {
@@ -1314,11 +1830,9 @@ function getProfileStats(profileId) {
           if (diff === 1) rBogeys++;
           if (diff >= 2) rBlowups++;
           if (hNet === 1) rAces++;
-          // Par scoring
           if (hPar === 3) { par3Strokes += hNet; par3Count++; }
           if (hPar === 4) { par4Strokes += hNet; par4Count++; }
           if (hPar === 5) { par5Strokes += hNet; par5Count++; }
-          // Per-hole
           holeData[hi].totalNet += hNet;
           holeData[hi].count++;
           holeData[hi].totalZones += z;
@@ -1341,36 +1855,27 @@ function getProfileStats(profileId) {
   const avgScore = roundCount > 0 ? (totalNet / roundCount).toFixed(1) : '–';
   const zonesPerRound = roundCount > 0 ? (totalZones / roundCount).toFixed(1) : '–';
   const avgPenalties = roundCount > 0 ? (totalPenalties / roundCount).toFixed(1) : '–';
-
-  // Par averages
   const par3Avg = par3Count > 0 ? (par3Strokes / par3Count).toFixed(2) : '–';
   const par4Avg = par4Count > 0 ? (par4Strokes / par4Count).toFixed(2) : '–';
   const par5Avg = par5Count > 0 ? (par5Strokes / par5Count).toFixed(2) : '–';
 
-  // Best/worst hole by avg vs par; in-the-zone and penalty-box
-  let bestHole = null, worstHole = null, inTheZoneHole = null, penaltyBoxHole = null;
-  let bestVal = Infinity, worstVal = -Infinity, bestZoneVal = -Infinity, bestPenVal = -Infinity;
+  let bestHole = null, worstHole = null;
+  let bestVal = Infinity, worstVal = -Infinity;
   holeData.forEach((hd, i) => {
     if (hd.count < 1) return;
     const avgNet = hd.totalNet / hd.count;
     const avgVsPar = avgNet - HOLES[i].par;
-    const avgZones = hd.totalZones / hd.count;
-    const avgPen = hd.totalPenalties / hd.count;
-    const hPar = HOLES[i].par;
-    const hNum = HOLES[i].num;
     const vsParStr = (avgVsPar >= 0 ? '+' : '') + avgVsPar.toFixed(2);
     const avgNetStr = avgNet.toFixed(2);
-    if (avgVsPar < bestVal) { bestVal = avgVsPar; bestHole = { num: hNum, par: hPar, avgNet: avgNetStr, avgVsPar: vsParStr }; }
-    if (avgVsPar > worstVal) { worstVal = avgVsPar; worstHole = { num: hNum, par: hPar, avgNet: avgNetStr, avgVsPar: vsParStr }; }
-    if (avgZones > bestZoneVal) { bestZoneVal = avgZones; inTheZoneHole = { num: hNum, par: hPar, avgZones: avgZones.toFixed(2) }; }
-    if (avgPen > bestPenVal) { bestPenVal = avgPen; penaltyBoxHole = { num: hNum, par: hPar, avgPen: avgPen.toFixed(2) }; }
+    if (avgVsPar < bestVal) { bestVal = avgVsPar; bestHole = { num: HOLES[i].num, par: HOLES[i].par, avgNet: avgNetStr, avgVsPar: vsParStr }; }
+    if (avgVsPar > worstVal) { worstVal = avgVsPar; worstHole = { num: HOLES[i].num, par: HOLES[i].par, avgNet: avgNetStr, avgVsPar: vsParStr }; }
   });
 
   return {
     rounds: roundCount, avgScore, bestScore, zonesPerRound, avgPenalties,
     birdiesPerRound: fmt1(totalBirdies), bogeysPerRound: fmt1(totalBogeys),
     blowupsPerRound: fmt1(totalBlowups), totalAces,
-    par3Avg, par4Avg, par5Avg, bestHole, worstHole, inTheZoneHole, penaltyBoxHole,
+    par3Avg, par4Avg, par5Avg, bestHole, worstHole,
   };
 }
 
@@ -1380,7 +1885,6 @@ function confirmDeleteProfile(id, name) {
     {label:'Delete',cls:'danger',action:`doDeleteProfile('${id}')`},
   ]);
 }
-
 function doDeleteProfile(id) { closeModal(); deleteProfile(id); renderProfilesScreen(); }
 
 function getSavedRounds() {
@@ -1394,7 +1898,6 @@ function showModal(icon,title,msg,actions) {
   document.getElementById('modal-actions').innerHTML=actions.map(a=>`<button class="modal-btn ${a.cls}" onclick="${a.action}">${a.label}</button>`).join('');
   document.getElementById('modal-overlay').classList.add('show');
 }
-
 function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
 
 function escHtml(str) {
@@ -1403,3 +1906,4 @@ function escHtml(str) {
 </script>
 </body>
 </html>
+
